@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merch — Wear The Movement | Ablaze Youth Choir</title>
+<meta name="description" content="Official Ablaze Youth Choir merch — apparel, accessories, and limited drops. Powered by Shopify." />
+<meta property="og:title" content="Ablaze Merch — Wear The Movement" />
+<meta property="og:description" content="Official Ablaze Youth Choir apparel and accessories. Limited drops, real fire." />
+<meta property="og:image" content="assets/photos/og-16x9.jpg" />
+<link rel="icon" type="image/svg+xml" href="assets/icons/fire.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .merch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  @media (max-width:900px){.merch-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:600px){.merch-grid{grid-template-columns:1fr}}
+  .product{position:relative;display:block;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0d0805;text-decoration:none;color:#fff;transition:transform .25s ease, border-color .25s ease}
+  .product:hover{transform:translateY(-3px);border-color:var(--fire-3)}
+  .product .ph{aspect-ratio:1/1;width:100%;display:block;object-fit:cover;background:#1a0f08}
+  .product .info{padding:18px 20px}
+  .product .tag-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .product .tag{display:inline-block;padding:4px 10px;background:var(--fire-3);color:#0d0805;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px}
+  .product h3{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.02em;margin:0 0 6px;text-transform:uppercase}
+  .product .price{color:var(--fire-3);font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px}
+  .product .meta{color:var(--ink-soft);font-size:13px}
+  .ph-fallback{aspect-ratio:1/1;width:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a0f08,#0d0805);color:var(--fire-3);font-family:'Anton',sans-serif;font-size:32px;letter-spacing:.06em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a>
+  <ul><li><a href="about.html">About</a></li><li><a href="music.html">Music</a></li><li><a href="watch.html">Watch</a></li><li><a href="merch.html">Merch</a></li><li><a href="booking.html">Booking</a></li><li><a href="marky.html">Our Director</a></li><li><a href="contact.html">Contact</a></li></ul>
+  <a href="#shop" class="btn btn-fire cta">Shop Now <span class="arrow">↗</span></a><button class="menu-btn" id="menuBtn">☰</button>
+</div></nav>
+<div class="m-menu" id="mMenu"><button class="close" id="closeBtn">×</button><a href="about.html">About</a><a href="music.html">Music</a><a href="watch.html">Watch</a><a href="merch.html">Merch</a><a href="booking.html">Booking</a><a href="marky.html">Our Director</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsor</a><a href="press.html">Press</a><a href="contact.html">Contact</a></div>
+
+<header class="page-hero">
+  <div id="embers"></div>
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Home</a> &nbsp;/&nbsp; Merch</div>
+    <div class="eyebrow">Shop</div>
+    <h1>Wear<br><em>the movement.</em></h1>
+    <p class="lede">Official Ablaze apparel and accessories. Limited drops. Built to last. Designed to be loud about what you believe.</p>
+    <div class="actions" style="margin-top:32px">
+      <a href="#shop" class="btn btn-fire">Shop The Drop <span class="arrow">↗</span></a>
+      <a href="society.html" class="btn btn-ghost">Join Society for Early Access</a>
+    </div>
+  </div>
+</header>
+
+<section class="block dark reveal" id="shop">
+  <div class="wrap">
+    <div class="sec-head"><div class="left"><div class="eyebrow">Available Now</div><h2>The <em>drop.</em></h2></div><p>Powered by Shopify. Secure checkout. Ships from Baton Rouge.</p></div>
+    <div class="merch-grid">
+
+      <a class="product" href="https://shop.ablazeyc.com/products/no-weapon-tee" target="_blank" rel="noopener">
+        <div class="ph-fallback">No Weapon Tee</div>
+        <div class="info">
+          <div class="tag-row"><span class="tag">Bestseller</span></div>
+          <h3>No Weapon Tee</h3>
+          <div class="price">$35</div>
+          <div class="meta">Heavyweight cotton · Black</div>
+        </div>
+      </a>
+
+      <a class="product" href="https://shop.ablazeyc.com/products/ablaze-album-tee" target="_blank" rel="noopener">
+        <div class="ph-fallback">Album Tee</div>
+        <div class="info">
+          <div class="tag-row"><span class="tag">New</span></div>
+          <h3>Ablaze Album Tee</h3>
+          <div class="price">$35</div>
+          <div class="meta">Tour-weight cotton · Cream</div>
+        </div>
+      </a>
+
+      <a class="product" href="https://shop.ablazeyc.com/products/generation-on-fire-hoodie" target="_blank" rel="noopener">
+        <div class="ph-fallback">Fire Hoodie</div>
+        <div class="info">
+          <h3>Generation On Fire Hoodie</h3>
+          <div class="price">$65</div>
+          <div class="meta">Heavyweight fleece · Black</div>
+        </div>
+      </a>
+
+      <a class="product" href="https://shop.ablazeyc.com/products/ablaze-crewneck" target="_blank" rel="noopener">
+        <div class="ph-fallback">Crewneck</div>
+        <div class="info">
+          <h3>Ablaze Crewneck</h3>
+          <div class="price">$55</div>
+          <div class="meta">Premium fleece · Sand</div>
+        </div>
+      </a>
+
+      <a class="product" href="https://shop.ablazeyc.com/products/ablaze-cap" target="_blank" rel="noopener">
+        <div class="ph-fallback">Dad Cap</div>
+        <div class="info">
+          <h3>Ablaze Dad Cap</h3>
+          <div class="price">$30</div>
+          <div class="meta">6-panel · Embroidered fire mark</div>
+        </div>
+      </a>
+
+      <a class="product" href="https://shop.ablazeyc.com/products/ablaze-tote" target="_blank" rel="noopener">
+        <div class="ph-fallback">Tote</div>
+        <div class="info">
+          <h3>Ablaze Canvas Tote</h3>
+          <div class="price">$25</div>
+          <div class="meta">Heavy canvas · Natural</div>
+        </div>
+      </a>
+
+    </div>
+    <div style="margin-top:40px;text-align:center"><a href="https://shop.ablazeyc.com" target="_blank" rel="noopener" class="btn btn-ghost">View Full Shopify Store <span class="arrow">↗</span></a></div>
+  </div>
+</section>
+
+<section class="block darker reveal">
+  <div class="wrap">
+    <div class="sec-head"><div class="left"><div class="eyebrow">How It Works</div><h2>Built <em>different.</em></h2></div></div>
+    <div class="pillars" style="grid-template-columns:repeat(3,1fr)">
+      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico">🛒</div><h4 style="color:#fff">Secure Shopify Checkout</h4><p style="color:#cfc7bb">Every purchase runs through Shopify — encrypted checkout, all major cards, Apple Pay, Shop Pay.</p></div>
+      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico">📦</div><h4 style="color:#fff">Ships From Baton Rouge</h4><p style="color:#cfc7bb">Domestic orders ship in 3–5 business days. International by request.</p></div>
+      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico">🔥</div><h4 style="color:#fff">Limited Runs</h4><p style="color:#cfc7bb">Most drops are short-run. When it's gone, it's gone — Society members get first dibs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark reveal">
+  <div class="wrap">
+    <div class="society">
+      <div class="eyebrow" style="color:#ffd9b3">Ablaze Society</div>
+      <h2>Get drops<br>before they hit.</h2>
+      <p>Society members get 48-hour early access and member-only pricing on every Ablaze drop. Free to join.</p>
+      <form data-form><input type="email" name="email" placeholder="your@email.com" required><button class="btn btn-dark" type="submit">Join Now <span class="arrow">↗</span></button></form>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="foot-grid">
+    <div class="foot-brand"><a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a><p>A spirit-led youth gospel movement out of <a href="https://ucfministries.org" target="_blank" rel="noopener" style="color:var(--fire-3)">United Christian Faith Ministries</a>.</p></div>
+    <div class="foot-col"><h5>Explore</h5><a href="about.html">About</a><a href="music.html">Music</a><a href="watch.html">Watch</a><a href="merch.html">Merch</a><a href="booking.html">Booking</a></div>
+    <div class="foot-col"><h5>The Movement</h5><a href="marky.html">Our Director</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsorship</a><a href="society.html">Ablaze Society</a></div>
+    <div class="foot-col"><h5>Connect</h5><a href="contact.html">Contact</a><a href="press.html">Press Kit</a><a href="https://ucfministries.org" target="_blank" rel="noopener">United Christian Faith Ministries</a></div>
+  </div>
+  <div class="ucfm-attribution"><div class="label">A Ministry Of</div><a href="https://ucfministries.org" target="_blank" rel="noopener"><img src="assets/logo/ucfm/ucfm-block-black.svg" alt="United Christian Faith Ministries"></a></div>
+  <div class="foot-bottom"><div>© 2026 ABLAZE YOUTH CHOIR · ALL RIGHTS RESERVED</div><div class="socials"><a href="https://www.tiktok.com/@ablazeyouthchoir" target="_blank" rel="noopener">TT</a><a href="https://www.instagram.com/ablazeyouthchoir/" target="_blank" rel="noopener">IG</a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener">YT</a><a href="https://open.spotify.com/artist/6zudSiQaQJQB8naH5pf65W" target="_blank" rel="noopener">SP</a><a href="https://music.apple.com/us/artist/ablaze/1717101169" target="_blank" rel="noopener">AM</a></div></div>
+</div></footer>
+<script src="scripts.js"></script>
+</body></html>
