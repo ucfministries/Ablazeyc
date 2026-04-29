@@ -5,6 +5,8 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+# FUSE ghost files (appear when a file is open while another process renames/deletes it)
+.fuse_hidden*
 
 # --- Heavy source / working files (keep on disk, not in repo) ---
 *.psd
@@ -48,3 +50,11 @@ dist/
 build/
 .cache/
 .netlify/
+
+# --- Heavy original hero photos (kept locally as masters; site references the
+#     web-optimized .jpg variants instead). Anchored to the deployed site path.
+site/assets/photos/hero-sing.png
+site/assets/photos/hero-ayc.png
+site/assets/photos/hero-alto.png
+site/assets/photos/hero-main.png
+site/assets/photos/hero-canttellitall.png
