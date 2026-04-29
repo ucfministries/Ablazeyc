@@ -30,15 +30,16 @@ ablaze_16_9.jpg
 ablaze_square.jpg
 
 # --- Working folders that aren't part of the deployed site ---
-General Photos/
-hero/
-discography/
-noweapon-tee/
-Map/
-Ablaze Font/
+# Anchored with leading / so they only match at repo root, not under site/assets/
+/General Photos/
+/hero/
+/discography/
+/noweapon-tee/
+/Map/
+/Ablaze Font/
 
 # --- Stale / empty subfolder from earlier attempt ---
-Ablaze/
+/Ablaze/
 
 # --- Logs & build outputs (just in case) ---
 *.log
