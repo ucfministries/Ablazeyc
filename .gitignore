@@ -1,0 +1,49 @@
+# --- macOS / editor junk ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Heavy source / working files (keep on disk, not in repo) ---
+*.psd
+*.psb
+*.ai
+*.sketch
+*.fig
+*.xd
+*.mp3
+*.wav
+*.mov
+*.mp4
+*.zip
+
+# --- Specific large files at root we don't need on GitHub ---
+ABLAZE BIO.mp3
+Ablaze Album Cover.png
+allyours-ablaze_square.psd
+mark.png
+markellis2.png
+arlenemccoy.png
+ablaze_16_9.jpg
+ablaze_square.jpg
+
+# --- Working folders that aren't part of the deployed site ---
+General Photos/
+hero/
+discography/
+noweapon-tee/
+Map/
+Ablaze Font/
+
+# --- Stale / empty subfolder from earlier attempt ---
+Ablaze/
+
+# --- Logs & build outputs (just in case) ---
+*.log
+node_modules/
+dist/
+build/
+.cache/
+.netlify/

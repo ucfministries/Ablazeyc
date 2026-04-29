@@ -1,0 +1,68 @@
+# Netlify configuration for ablazeyc.com
+# Place this file at the root of the Ablaze Web folder.
+# Netlify reads it automatically on every deploy.
+
+[build]
+  # The folder to publish. site/ contains all the .html, css, js, and assets.
+  publish = "site"
+  # No build step needed — these are static HTML files.
+  # publish-time logging and asset bundling stay default.
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true   # /booking instead of /booking.html
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.images]
+  compress = true
+
+# Custom 404
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+# Pretty URL aliases (so links look clean in social bios)
+[[redirects]]
+  from = "/l"
+  to = "/links"
+  status = 301
+
+[[redirects]]
+  from = "/bio"
+  to = "/links"
+  status = 301
+
+[[redirects]]
+  from = "/book"
+  to = "/booking"
+  status = 301
+
+[[redirects]]
+  from = "/apply"
+  to = "/scholarship-apply"
+  status = 301
+
+# Security headers (basic best practices)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Long-cache for assets that don't change often
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

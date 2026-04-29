@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apply — Ablaze Scholarship | Ablaze Youth Choir</title>
+<meta name="description" content="Apply for the Ablaze Scholarship. Open to active Ablaze Youth Choir members heading into college, trade school, military, or accredited programs." />
+<link rel="icon" type="image/svg+xml" href="assets/icons/fire.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a>
+  <ul><li><a href="about.html">About</a></li><li><a href="music.html">Music</a></li><li><a href="watch.html">Watch</a></li><li><a href="booking.html">Booking</a></li><li><a href="marky.html">Ablaze Reach</a></li><li><a href="scholarship.html">Scholarship</a></li><li><a href="press.html">Press</a></li><li><a href="contact.html">Contact</a></li></ul>
+  <a href="scholarship.html" class="btn btn-ghost cta">Back to Overview</a><button class="menu-btn" id="menuBtn">☰</button>
+</div></nav>
+<div class="m-menu" id="mMenu"><button class="close" id="closeBtn">×</button><a href="about.html">About</a><a href="music.html">Music</a><a href="watch.html">Watch</a><a href="booking.html">Booking</a><a href="marky.html">Ablaze Reach</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsor</a><a href="press.html">Press</a><a href="contact.html">Contact</a></div>
+
+<header class="page-hero">
+  <div id="embers"></div>
+  <div class="wrap">
+    <div class="crumbs"><a href="scholarship.html">Scholarship</a> &nbsp;/&nbsp; Apply</div>
+    <div class="eyebrow">Application</div>
+    <h1>Tell us<br><em>your story.</em></h1>
+    <p class="lede">This form gets you started. We'll follow up with the additional documents (essay, recommendation letter, enrollment verification, etc.) within 3 business days.</p>
+  </div>
+</header>
+
+<section class="block darker reveal">
+  <div class="wrap">
+    <form class="form" name="scholarship" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" style="max-width:920px;margin:0 auto">
+      <input type="hidden" name="form-name" value="scholarship">
+      <p hidden><label>Don't fill: <input name="bot-field"></label></p>
+      <h3 style="font-family:'Anton',sans-serif;font-size:32px;text-transform:uppercase;color:#fff;margin-bottom:6px">Personal Information</h3>
+      <div class="row"><div><label>First Name *</label><input type="text" name="first_name" required></div><div><label>Last Name *</label><input type="text" name="last_name" required></div></div>
+      <div class="row"><div><label>Email *</label><input type="email" name="email" required></div><div><label>Phone *</label><input type="tel" name="phone" required></div></div>
+      <div class="row"><div><label>Date of Birth *</label><input type="date" name="dob" required></div><div><label>Parent / Guardian Name *</label><input type="text" name="guardian" required></div></div>
+      <div class="full"><label>Mailing Address *</label><input type="text" name="address" required></div>
+
+      <h3 style="font-family:'Anton',sans-serif;font-size:32px;text-transform:uppercase;color:#fff;margin-top:20px;margin-bottom:6px">Membership</h3>
+      <div class="row">
+        <div><label>Years as Active Ablaze Member *</label><select name="years" required><option value="">Select...</option><option>2 Years</option><option>3 Years</option><option>4 Years</option><option>5+ Years</option></select></div>
+        <div><label>Estimated Attendance *</label><select name="attendance" required><option value="">Select...</option><option>85–90%</option><option>90–95%</option><option>95–100%</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>Service Role *</label><select name="role" required><option value="">Select...</option><option>Vocalist / Choir</option><option>Soloist</option><option>Band / Musician</option><option>Media / Tech</option><option>Hospitality</option><option>Multiple Roles</option></select></div>
+        <div><label>Choir Director (Reference) *</label><input type="text" name="director" required></div>
+      </div>
+
+      <h3 style="font-family:'Anton',sans-serif;font-size:32px;text-transform:uppercase;color:#fff;margin-top:20px;margin-bottom:6px">Education / Path</h3>
+      <div class="row">
+        <div><label>Path After Graduation *</label><select name="path" required><option value="">Select...</option><option>4-Year College / University</option><option>Community College</option><option>Trade / Vocational School</option><option>Military Program</option><option>Accredited Certification</option></select></div>
+        <div><label>School / Program Name *</label><input type="text" name="school" required></div>
+      </div>
+      <div class="row">
+        <div><label>Acceptance / Enrollment Status *</label><select name="status" required><option value="">Select...</option><option>Accepted</option><option>Enrolled</option><option>Pending</option></select></div>
+        <div><label>Anticipated Start Date *</label><input type="date" name="start_date" required></div>
+      </div>
+      <div class="full"><label>Intended Major / Focus Area</label><input type="text" name="major"></div>
+
+      <h3 style="font-family:'Anton',sans-serif;font-size:32px;text-transform:uppercase;color:#fff;margin-top:20px;margin-bottom:6px">Vision</h3>
+      <div class="full"><label>What does the Ablaze Scholarship mean to you? *</label><textarea name="meaning" placeholder="A short version — your full essay (500–700 words) will be requested in the next step." required></textarea></div>
+      <div class="full"><label>How do you plan to represent Ablaze in your next chapter? *</label><textarea name="representation" required></textarea></div>
+
+      <h3 style="font-family:'Anton',sans-serif;font-size:32px;text-transform:uppercase;color:#fff;margin-top:20px;margin-bottom:6px">Acknowledgments</h3>
+      <div class="full check"><input type="checkbox" id="conduct" name="conduct" required><label for="conduct" style="margin:0">I confirm I have no active disciplinary concerns within the choir or ministry.</label></div>
+      <div class="full check"><input type="checkbox" id="commit" name="commit" required><label for="commit" style="margin:0">I commit to the post-award expectations: maintaining communication, providing updates, and returning for select Ablaze worship moments when available.</label></div>
+      <div class="full check"><input type="checkbox" id="docs" name="docs" required><label for="docs" style="margin:0">I understand additional documents will be requested after this initial application.</label></div>
+
+      <div class="full"><button type="submit" class="btn btn-fire">Submit Application <span class="arrow">↗</span></button></div>
+    </form>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="foot-grid">
+    <div class="foot-brand"><a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a><p>A spirit-led youth gospel movement out of <a href="https://ucfministries.org" target="_blank" rel="noopener" style="color:var(--fire-3)">United Christian Faith Ministries</a>.</p></div>
+    <div class="foot-col"><h5>Explore</h5><a href="about.html">About</a><a href="music.html">Music</a><a href="watch.html">Watch</a><a href="booking.html">Booking</a></div>
+    <div class="foot-col"><h5>The Movement</h5><a href="marky.html">Ablaze Reach</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsorship</a><a href="society.html">Ablaze Society</a></div>
+    <div class="foot-col"><h5>Connect</h5><a href="contact.html">Contact</a><a href="press.html">Press Kit</a><a href="https://ucfministries.org" target="_blank" rel="noopener">United Christian Faith Ministries</a></div>
+  </div>
+  <div class="ucfm-attribution"><div class="label">A Ministry Of</div><a href="https://ucfministries.org" target="_blank" rel="noopener"><img src="assets/logo/ucfm/ucfm-block-black.svg" alt="United Christian Faith Ministries"><div class="name">United Christian Faith Ministries</div></a></div>
+  <div class="foot-bottom"><div>© 2026 ABLAZE YOUTH CHOIR · ALL RIGHTS RESERVED</div><div class="socials"><a href="https://www.tiktok.com/@ablazeyouthchoir" target="_blank" rel="noopener">TT</a><a href="https://www.instagram.com/ablazeyouthchoir/" target="_blank" rel="noopener">IG</a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener">YT</a><a href="https://open.spotify.com/artist/6zudSiQaQJQB8naH5pf65W" target="_blank" rel="noopener">SP</a><a href="https://music.apple.com/us/artist/ablaze/1717101169" target="_blank" rel="noopener">AM</a></div></div>
+</div></footer>
+<script src="scripts.js"></script>
+</body></html>

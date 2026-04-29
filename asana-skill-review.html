@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "asana", "runs": [{"id": "eval-1-ai-teammates-with_skill", "prompt": "My team just started using Asana and my manager asked me to figure out what AI features are available. I've heard something about 'AI Teammates' \u2014 what are they, how do they work, and which ones would be most useful for a marketing team?", "eval_id": 1, "outputs": [{"name": "response.txt", "type": "text", "content": "AI TEAMMATES IN ASANA: A GUIDE FOR YOUR MANAGER\n\nWHAT ARE AI TEAMMATES?\n\nAI Teammates are collaborative AI agents built into Asana that work alongside your team to complete specific work tasks automatically. They're not generic chatbots\u2014they're specialized, prebuilt agents designed for particular roles and departments. When deployed, an AI Teammate understands your unique project context and takes autonomous action to complete work without manual intervention.\n\nThe key difference from traditional automation is that AI Teammates are intelligent agents that can draft content, create tasks, update statuses, surface blockers, and handle complex work that previously required human effort.\n\nHOW DO AI TEAMMATES WORK?\n\nThe workflow is straightforward:\n1. Browse the AI Teammates gallery (21+ available agents)\n2. Select the AI Teammate that matches your team's needs\n3. Deploy it into your Asana workflow\n4. The AI Teammate learns your unique project context\n5. It takes autonomous action\u2014drafting briefs, creating tasks, updating statuses, surfacing blockers\n6. Results are delivered directly in the flow of your work, right where your team is already working\n\nEverything happens within Asana, so there's no switching between tools or manual copy-paste workflows.\n\nKEY BENEFITS ACROSS THE BOARD\n\n\u2022 Launch campaigns, products, and strategic initiatives faster\n\u2022 Scale operations for greater impact without proportionally increasing team size\n\u2022 Flag compliance risks early through automated monitoring\n\u2022 Complete complex tasks faster without leaving Asana\n\u2022 Reduce time from planning to delivery\n\u2022 Keep everyone aligned automatically\n\nAI TEAMMATES FOR MARKETING TEAMS\n\nMarketing is one of the best-served departments in the AI Teammates gallery. Here are the 6 AI Teammates specifically built for marketing:\n\n1. COMPETITIVE MARKET RESEARCHER\n   \u2022 What it does: Researches competitive landscape and market trends\n   \u2022 Best for: Understanding your competitive positioning, identifying market opportunities\n   \u2022 Saves time on: Market research, competitive analysis, trend identification\n\n2. CREATIVE SPEC WRITER\n   \u2022 What it does: Drafts detailed creative specifications and briefs\n   \u2022 Best for: Standardizing creative production requirements across campaigns\n   \u2022 Saves time on: Writing specs, ensuring creative consistency, reducing back-and-forth\n\n3. LAUNCH PLANNER\n   \u2022 What it does: Plans and structures product or campaign launches\n   \u2022 Best for: Breaking down launches into actionable phases and timelines\n   \u2022 Saves time on: Launch planning, sequencing tasks, identifying dependencies\n\n4. COPYWRITER\n   \u2022 What it does: Creates and refines marketing copy\n   \u2022 Best for: Generating ad copy, landing page content, email campaigns\n   \u2022 Saves time on: Initial draft creation, A/B copy variations, editing rounds\n\n5. CAMPAIGN BRIEF WRITER\n   \u2022 What it does: Drafts comprehensive campaign briefs\n   \u2022 Best for: Creating standardized, detailed briefs for all team members to follow\n   \u2022 Saves time on: Brief creation, ensuring all stakeholders have aligned information\n\n6. CONTENT LOCALIZATION MANAGER\n   \u2022 What it does: Adapts and localizes content for different markets and regions\n   \u2022 Best for: Multi-market campaigns, regional customization\n   \u2022 Saves time on: Translation, cultural adaptation, regional compliance\n\nWHICH ONES ARE MOST USEFUL FOR YOUR MARKETING TEAM?\n\nThis depends on your specific marketing workflows, but here's a priority framework:\n\nHIGH IMPACT (Start here):\n\u2022 Campaign Brief Writer \u2014 If your team creates multiple campaigns, this saves enormous time on brief creation and ensures consistency. Most marketing teams will benefit immediately.\n\u2022 Launch Planner \u2014 If you manage product or feature launches, this reduces planning time and catches dependencies early.\n\u2022 Copywriter \u2014 If your team writes marketing copy regularly, this accelerates content creation significantly.\n\nSTRONG SECONDARY OPTIONS (Deploy next):\n\u2022 Creative Spec Writer \u2014 Especially valuable if you work with external creative agencies or have distributed creative teams that need standardized specs.\n\u2022 Content Localization Manager \u2014 Highly valuable if you operate in multiple markets or regions.\n\nSITUATIONAL/SPECIALIZED:\n\u2022 Competitive Market Researcher \u2014 Valuable for strategic planning and quarterly business reviews, but less frequently used in day-to-day marketing operations.\n\nRECOMMENDED IMPLEMENTATION APPROACH\n\n1. Start with Campaign Brief Writer (highest ROI for most teams)\n2. Pilot it with one active campaign or project\n3. Measure time saved and quality of output\n4. Once the team is comfortable, add Launch Planner or Copywriter (whichever matches your next priority)\n5. Gradually expand to others as you identify specific use cases\n\nAI TEAMMATES + OTHER ASANA AI FEATURES\n\nAI Teammates work best as part of Asana's broader AI platform:\n\n\u2022 AI Studio + Slack Integration: Automatically convert Slack requests (e.g., campaign requests) into structured Asana tasks with fields pre-populated. This feeds work into your AI Teammates' workflows.\n\u2022 Rules with Automatic AI Model Selection: AI Teammates work alongside automated rules that can trigger actions, route work, and surface status updates.\n\u2022 Asana App in Claude: Generate project plans and complex campaign structures using natural language in Claude, then have AI Teammates handle execution within those projects.\n\nWHAT YOUR MANAGER SHOULD KNOW\n\n\u2022 AI Teammates are available starting in the Winter 2026 release (February/March 2026)\n\u2022 They integrate directly into Asana\u2014no additional tools or training wheels needed\n\u2022 Your team can deploy them from the gallery in minutes\n\u2022 The AI respects Asana's existing permission and access controls\u2014no security concerns\n\u2022 Admins can monitor which AI Teammates (and other AI apps) are being used in the Admin App Management portal\n\u2022 There's no extra cost\u2014they're included with Advanced and Enterprise plans\n\nNEXT STEPS\n\n1. Make sure your workspace is on Asana Advanced or Enterprise plan\n2. Have team leads review the AI Teammates gallery\n3. Identify 1-2 AI Teammates to pilot (Campaign Brief Writer is the recommendation for marketing)\n4. Assign someone to manage the pilot and gather feedback\n5. Optionally, consider the \"AI for Work\" Skill Badge on Asana Academy to upskill your team on using AI Teammates effectively\n\nThe AI for Work Skill Badge covers how to use AI Teammates in real workflows, how to evaluate AI output in work contexts, and how AI keeps teams aligned\u2014ideal for getting your team up to speed quickly.\n\n---\n\nSUMMARY FOR YOUR MANAGER\n\nAI Teammates are prebuilt, intelligent agents that automate specific work tasks within Asana. For marketing, the top three to implement are: Campaign Brief Writer (standardizes briefs across campaigns), Launch Planner (accelerates go-to-market planning), and Copywriter (speeds up content creation). They integrate seamlessly into existing workflows, require no additional setup, and can reduce time-to-execution significantly. Start with Campaign Brief Writer as a pilot and expand from there."}], "grading": null}, {"id": "eval-1-ai-teammates-without_skill", "prompt": "My team just started using Asana and my manager asked me to figure out what AI features are available. I've heard something about 'AI Teammates' \u2014 what are they, how do they work, and which ones would be most useful for a marketing team?", "eval_id": 1, "outputs": [{"name": "response.txt", "type": "text", "content": "ASANA AI FEATURES AND AI TEAMMATES\nResearch Summary for Marketing Team\n\n==============================================================================\n\nWHAT ARE AI TEAMMATES?\n\nAI Teammates in Asana are intelligent AI-powered assistants designed to help teams\nautomate routine work and enhance productivity. These are virtual team members that\ncan handle specific tasks, provide intelligent suggestions, and streamline common\nworkflows without requiring manual intervention.\n\nAsana's AI capabilities function within the project management platform to help teams\nwork smarter, not harder. They're available as integrated features within Asana projects\nand workflows.\n\n==============================================================================\n\nHOW DO AI TEAMMATES WORK?\n\nAI Teammates operate through several key mechanisms:\n\n1. INTEGRATION WITH WORKFLOWS\n   - AI features are embedded directly into Asana projects, tasks, and team processes\n   - They work with existing data and task structures already in your Asana workspace\n   - No separate platform or tool needed\u2014they function within your normal Asana interface\n\n2. TASK AUTOMATION\n   - AI can help identify repetitive patterns in work and automate those processes\n   - Assists with creating and organizing tasks based on project requirements\n   - Can suggest task breakdowns, dependencies, and timeline recommendations\n\n3. INTELLIGENT ASSISTANCE\n   - Provides contextual suggestions based on project history and team patterns\n   - Helps with writing and content generation for task descriptions, briefs, and updates\n   - Offers smart recommendations for task prioritization and resource allocation\n\n4. NATURAL LANGUAGE PROCESSING\n   - Users can interact with AI features using natural language commands\n   - The system understands context from project conversations and task details\n   - Can extract information and generate summaries from project conversations\n\n5. LEARNING FROM CONTEXT\n   - AI Teammates learn from how your team works and the patterns in your projects\n   - They adapt recommendations based on historical project data and team behaviors\n   - Improve suggestions over time as they understand your team's specific workflows\n\n==============================================================================\n\nKEY AI FEATURES IN ASANA\n\nThe main AI-powered features available in Asana include:\n\n1. AI TASK CREATION AND BREAKDOWN\n   - Automatically suggests task structures based on project goals\n   - Helps break down large initiatives into manageable subtasks\n   - Can recommend task dependencies and sequences\n\n2. AI-ASSISTED WRITING\n   - Helps draft task descriptions, project briefs, and status updates\n   - Can generate professional language for communications\n   - Assists with clarifying and improving written content\n\n3. SMART SUMMARIES\n   - Automatically generates summaries of project progress and activities\n   - Creates status updates from conversation history and task completion data\n   - Helps quickly catch team members up on project developments\n\n4. PRIORITY AND EFFORT ESTIMATION\n   - Assists with estimating task complexity and effort requirements\n   - Provides recommendations on task prioritization\n   - Suggests realistic timelines based on similar historical tasks\n\n5. DUPLICATE DETECTION\n   - Identifies duplicate or overlapping tasks in projects\n   - Helps consolidate redundant work items\n   - Prevents duplicate effort across the team\n\n6. WORKFLOW OPTIMIZATION\n   - Suggests process improvements based on how work flows through your project\n   - Identifies bottlenecks in workflows\n   - Recommends template improvements\n\n==============================================================================\n\nMOST USEFUL AI FEATURES FOR MARKETING TEAMS\n\nMarketing teams can derive significant value from these specific AI capabilities:\n\n1. CAMPAIGN PLANNING AND TASK BREAKDOWN (HIGH PRIORITY)\n   Why: Marketing campaigns involve multiple components across channels, timelines,\n   and dependencies that benefit from structured planning.\n\n   Use Case: When launching a new campaign, AI can help break down the initiative\n   into tasks for copywriting, design, social media scheduling, email marketing,\n   analytics setup, and more\u2014automatically organizing them into a logical sequence.\n\n2. CONTENT CREATION ASSISTANCE (HIGH PRIORITY)\n   Why: Marketing teams create extensive content across multiple channels and formats.\n\n   Use Case: Use AI writing assistance to draft task descriptions for content projects,\n   create briefs for designers, write status updates, and help ensure consistent\n   messaging across campaign materials.\n\n3. PROJECT STATUS SUMMARIES (HIGH PRIORITY)\n   Why: Marketing leaders need quick overviews of campaign performance and team progress.\n\n   Use Case: AI can automatically generate weekly status updates showing campaign progress,\n   completed tasks, upcoming deadlines, and blockers\u2014saving time on manual reporting\n   and keeping stakeholders informed.\n\n4. TIMELINE AND DEPENDENCY MANAGEMENT (MEDIUM-HIGH PRIORITY)\n   Why: Marketing campaigns have critical path elements that must be sequenced correctly.\n\n   Use Case: AI can suggest realistic timelines for common marketing tasks (design\n   iterations, approval cycles, publishing windows) and identify which tasks can run\n   in parallel versus which must be sequential.\n\n5. DUPLICATE WORK DETECTION (MEDIUM PRIORITY)\n   Why: Marketing teams often work on multiple initiatives that might overlap.\n\n   Use Case: AI can flag when similar content pieces, campaigns, or design tasks are\n   being created across different projects, helping consolidate efforts and maintain\n   consistency.\n\n6. PRIORITY OPTIMIZATION (MEDIUM PRIORITY)\n   Why: Marketing teams juggle many concurrent campaigns and initiatives.\n\n   Use Case: Based on deadlines, campaign importance, and resource availability, AI\n   can help teams prioritize which campaigns to focus on and which tasks are most\n   critical in the current period.\n\n7. WORKFLOW AUTOMATION (MEDIUM PRIORITY)\n   Why: Marketing processes have repetitive steps that could be standardized.\n\n   Use Case: AI can help identify and automate recurring workflows like campaign\n   approval processes, content review cycles, or asset handoff procedures.\n\n==============================================================================\n\nIMPLEMENTATION RECOMMENDATIONS FOR YOUR MARKETING TEAM\n\n1. START WITH CAMPAIGN PLANNING\n   Begin by using AI task breakdown for your next major campaign launch. This provides\n   immediate value and helps the team see how AI can support planning.\n\n2. LEVERAGE WRITING ASSISTANCE\n   Have team members use AI writing features for task briefs, descriptions, and status\n   updates to save time on communication work.\n\n3. AUTOMATE STATUS REPORTING\n   Use AI summaries to generate weekly or bi-weekly campaign status reports, freeing\n   up time for strategic thinking.\n\n4. CREATE TEMPLATE WORKFLOWS\n   Use AI recommendations to establish standardized workflows for common marketing\n   activities (social media campaigns, email promotions, content series, etc.).\n\n5. GRADUALLY EXPAND USAGE\n   Start with 2-3 key AI features, get team comfortable with them, then expand to\n   other capabilities as adoption increases.\n\n==============================================================================\n\nEXPECTED BENEFITS FOR MARKETING TEAMS\n\n- Reduced time on repetitive planning and organizational tasks\n- More consistent project structures and naming conventions\n- Faster turnaround on status reports and stakeholder communications\n- Better identification of dependencies and realistic timelines\n- Reduced manual effort on writing and content generation tasks\n- Improved visibility into campaign progress across the team\n- More time for strategic and creative work versus administrative overhead\n\n==============================================================================\n\nNOTES ON AVAILABILITY AND SETUP\n\n- AI features in Asana are generally available in paid Asana plans\n- Some features may require Asana Premium or Business tier\n- Access through your normal Asana interface\u2014no separate setup typically needed\n- Your workspace administrator may need to enable AI features\n- Teams should verify their current Asana plan to confirm which AI features are available\n- Consider consulting Asana documentation or support for the most current feature list\n  and any plan-specific restrictions\n\n==============================================================================\n\nSUMMARY\n\nAI Teammates in Asana represent a meaningful productivity enhancement for marketing\nteams by automating routine planning, organization, and communication tasks. The most\nvaluable features for marketing specifically are campaign task breakdown, content\nwriting assistance, and automated status summaries. By starting with these core\ncapabilities and gradually expanding usage, your marketing team can expect to free\nup significant time currently spent on administrative work, allowing more focus on\nstrategic marketing initiatives.\n\nThe key to successful adoption is starting with features that address your team's most\nacute pain points\u2014likely campaign planning and timeline management\u2014and building from\nthere as team members become comfortable with AI-assisted work.\n"}], "grading": null}, {"id": "eval-2-certifications-with_skill", "prompt": "I want to get certified in Asana. Can you walk me through all the certifications and courses available from Asana Academy and tell me which one I should pursue first? I'm a project manager who mostly builds workflows for my team.", "eval_id": 2, "outputs": [{"name": "response.txt", "type": "text", "content": "ASANA ACADEMY CERTIFICATIONS AND COURSES GUIDE\n\nHello! I'm happy to walk you through all the Asana Academy certifications and courses available, and recommend the best path for you as a project manager building workflows for your team.\n\n---\n\n## COMPLETE ASANA ACADEMY CATALOG\n\nAll courses are available at academy.asana.com and are self-paced. Many are free to start, though certifications require passing exams.\n\n### SKILL BADGES & CERTIFICATIONS AVAILABLE\n\n#### 1. ASANA FOUNDATIONS SKILL BADGE (Beginner Level - 6 Courses)\nTime Commitment: Self-paced\nBest For: New Asana users, individuals, teams getting started\n\nThis foundational path covers:\n- Asana for collaborative work management (15 minutes)\n- Structure work with projects and tasks (25 minutes)\n- Improve productivity and communication\n- Build and manage workflows\n- Strategic planning with portfolios and goals\n- Capstone/assessment for badge\n\nThis is the entry-level certification perfect if you're brand new to Asana or want a comprehensive overview of all basic features.\n\n---\n\n#### 2. WORKFLOW SPECIALIST CERTIFICATE (Intermediate Level - 2 Courses)\nTime Commitment: 8-10 hours total; 90 days to complete once started\nExam: 60 questions, 80% passing score required\nBest For: Team leads, project managers, program managers, ops professionals\n\nThis intermediate certification teaches you how to plan, build, and deploy successful workflows, then discover best practices to help your team use them effectively.\n\nFormat includes:\n- Lessons with demonstrations\n- Guided practice exercises\n- Knowledge checks\n- Comprehensive 60-question final exam (must achieve 80% to pass)\n\nSpecial Recognition: Named one of the top 3 AI certifications by Forbes (2025)\n\n**THIS IS THE CERTIFICATION I RECOMMEND FOR YOU.** As a project manager who builds workflows for your team, this is specifically designed for your role and needs.\n\n---\n\n#### 3. AI FOR WORK SKILL BADGE (Intermediate Level - 5 Courses)\nTime Commitment: Self-paced\nBest For: Anyone on a team using Asana's AI features\n\nThis certification builds essential AI skills and teaches you how to use Asana's latest AI capabilities to boost productivity and collaboration. It covers:\n- How AI keeps teams aligned and moving faster\n- Using AI Teammates in real workflows\n- AI Studio for intake and automation\n- Evaluating AI output in work contexts\n\nThis is excellent if you want to leverage Asana's powerful new AI features (Winter 2026 release) like AI Teammates, AI Studio, and Slack integration.\n\n---\n\n#### 4. ASANA ADMINISTRATOR CERTIFICATE (Advanced Level - 13 Courses)\nTime Commitment: Self-paced (more substantial than others)\nValidity: 2 years (requires renewal)\nExam: Scenario-based capstone project + timed multiple-choice exam\nBest For: Asana admins, IT leads, system administrators\n\nThis advanced certification teaches you how to set up, secure, and manage an entire Asana environment. Covers:\n- Setting up and managing your organization's workspace\n- User management and provisioning\n- Security policies, SSO, and access controls\n- Ensuring teams can work efficiently and securely\n\nThis is for system-level administration and not needed for workflow building.\n\n---\n\n### INDIVIDUAL STANDALONE COURSES\n\nIf you prefer to take individual courses rather than full certifications, these are available:\n\n- Asana for collaborative work management (15 min) - Beginner\n- Structure work with projects and tasks (25 min) - Beginner\n- Improve productivity and communication (~30 min) - Beginner\n- Build and manage workflows (~45 min) - Intermediate\n- Strategic planning with portfolios and goals (~45 min) - Intermediate\n- Get started with Asana - Beginner (quickstart)\n\n---\n\n## MY RECOMMENDATION FOR YOU\n\n**Start with the WORKFLOW SPECIALIST CERTIFICATE.**\n\nHere's why this is the perfect fit for you:\n\n1. **Your Role Match** - It's specifically designed for project managers and team leads who build workflows. This certification directly addresses what you do daily.\n\n2. **Right Level of Depth** - As someone already using Asana to build workflows, the Foundations badge would be too basic, but the Admin Certificate would be overkill. The Workflow Specialist sits at the perfect intermediate level.\n\n3. **Industry Recognition** - This certification was named one of the top 3 AI certifications by Forbes (2025), so it carries professional credibility and value for your career.\n\n4. **Practical Application** - The course includes lessons, demos, guided practice, and knowledge checks so you'll gain hands-on skills you can immediately apply to your team's workflows.\n\n5. **Reasonable Time Commitment** - At 8-10 hours total with 90 days to complete, it's achievable without being overwhelming.\n\n6. **Exam Validation** - The 60-question final exam (requiring 80% to pass) ensures you have real expertise in workflow design and best practices.\n\n---\n\n## SUGGESTED LEARNING PATH\n\nIf you want to go beyond just the Workflow Specialist Certificate, here's an optimal progression:\n\n**Phase 1 (Now):** Complete the Workflow Specialist Certificate\n- This gives you deep expertise in workflow planning, building, and deployment\n\n**Phase 2 (Optional, after Phase 1):** Take the AI for Work Skill Badge\n- Asana's Winter 2026 release includes powerful new AI features (AI Teammates, AI Studio with Slack integration) that can enhance your workflow designs\n- This will make you an expert at leveraging AI to make your workflows even more powerful\n\n**Phase 3 (Much Later, if needed):** Consider the Administrator Certificate\n- Only if you transition into a broader admin/IT role managing the Asana environment for your organization\n\n---\n\n## HOW TO GET STARTED\n\nVisit **academy.asana.com** and look for the Workflow Specialist Certificate program. You can start immediately with self-paced learning, and you'll have 90 days from when you start to complete all the course material and pass the final exam.\n\n---\n\n## SUMMARY\n\nFor a project manager building workflows: **Pursue the Workflow Specialist Certificate first.** It's purpose-built for your role, will deepen your expertise in workflow design and best practices, and carries industry recognition. After mastering that, you can optionally add the AI for Work badge to leverage Asana's newest AI capabilities in your workflows.\n\nGood luck with your certification journey!"}], "grading": null}, {"id": "eval-2-certifications-without_skill", "prompt": "I want to get certified in Asana. Can you walk me through all the certifications and courses available from Asana Academy and tell me which one I should pursue first? I'm a project manager who mostly builds workflows for my team.", "eval_id": 2, "outputs": [{"name": "response.txt", "type": "text", "content": "ASANA ACADEMY CERTIFICATIONS GUIDE\nFor Project Managers Building Team Workflows\n\n================================================================\nOVERVIEW OF ASANA ACADEMY CERTIFICATIONS\n================================================================\n\nAsana Academy offers several certification pathways designed for different skill levels and roles. The certifications validate your expertise in using Asana to manage projects, build workflows, and lead teams effectively.\n\nThe main certification tracks available through Asana Academy include:\n\n1. ASANA FUNDAMENTALS CERTIFIED\n   - Level: Beginner\n   - Focus: Core Asana functionality and basic project management\n   - Duration: Self-paced, typically 2-3 hours\n   - Format: Online learning modules followed by assessment\n   - What you'll learn:\n     * Navigating the Asana interface\n     * Creating and organizing projects\n     * Managing tasks and subtasks\n     * Using basic portfolio features\n     * Collaborating with team members\n     * Setting up basic workflows\n\n2. ASANA ADVANCED CERTIFIED\n   - Level: Intermediate\n   - Focus: Advanced features and workflow optimization\n   - Duration: Self-paced, typically 3-4 hours\n   - Format: Online modules with hands-on practice and assessment\n   - What you'll learn:\n     * Advanced portfolio management\n     * Custom fields and templates\n     * Automation and workflow optimization\n     * Dependencies and timelines\n     * Reporting and analytics\n     * Best practices for scaling workflows\n\n3. ASANA PROJECT MANAGER CERTIFIED\n   - Level: Intermediate to Advanced\n   - Focus: Project management best practices using Asana\n   - Duration: Self-paced, comprehensive curriculum\n   - Format: Structured learning path with assessment\n   - What you'll learn:\n     * Project planning and strategy\n     * Resource allocation and capacity planning\n     * Stakeholder communication\n     * Risk management in Asana\n     * Timeline and dependency management\n     * Measuring project success\n\n4. WORKFLOW BUILDER CERTIFICATION (Specialized Track)\n   - Level: Advanced\n   - Focus: Creating and managing custom workflows\n   - Duration: Self-paced, 4+ hours\n   - Format: Advanced modules with practical application\n   - What you'll learn:\n     * Custom workflow design\n     * Using Asana rules and automation\n     * Form creation and data capture\n     * Workflow templates\n     * Integration strategies\n     * Optimizing workflows for team adoption\n\n================================================================\nRECOMMENDED CERTIFICATION PATH FOR YOU\n================================================================\n\nBased on your profile as a project manager who builds workflows for your team, here's the recommended progression:\n\nFIRST: ASANA FUNDAMENTALS CERTIFIED\n- Start here even if you have some Asana experience\n- Ensures you have a solid foundation of all core concepts\n- Quick to complete (2-3 hours)\n- Provides baseline knowledge for advanced certifications\n- Many organizations require this as a prerequisite\n- Helps you ensure you're not missing key features\n\nSECOND: ASANA ADVANCED CERTIFIED\n- Take this after completing Fundamentals\n- Directly applicable to your workflow-building role\n- Covers custom fields, templates, and automation\u2014essential for building team workflows\n- Teaches portfolio management for overseeing multiple workflows\n- Provides best practices for scaling solutions\n- Estimated timeline: 1-2 weeks after Fundamentals\n\nTHIRD: WORKFLOW BUILDER CERTIFICATION\n- Pursue this as your specialty certification\n- This is specifically designed for your use case\n- Teaches advanced workflow design patterns\n- Covers Asana's automation rules and custom workflows\n- Teaches how to implement forms and data capture\n- Most valuable for someone building workflows for teams\n- Timeline: 2-4 weeks after Advanced certification\n\nOPTIONAL: ASANA PROJECT MANAGER CERTIFIED\n- Consider this if you want a broader PM credential\n- Complements technical certifications with project management theory\n- Useful if you want to emphasize PM skills alongside technical abilities\n- Can be taken alongside other certifications\n\n================================================================\nSPECIFIC BENEFITS FOR YOUR ROLE\n================================================================\n\nAs someone building workflows for your team, here's how each certification helps:\n\nFUNDAMENTALS\n\u2713 Learn all available task views (List, Board, Timeline, Calendar, etc.)\n\u2713 Understand how to structure projects optimally\n\u2713 Master basic automation capabilities\n\u2713 Learn team permission and access control\n\nADVANCED\n\u2713 Custom fields for tracking specific workflow data\n\u2713 Project templates to standardize your workflows\n\u2713 Advanced automation and rules\n\u2713 Portfolio management to oversee multiple workflows\n\u2713 Dependencies and timeline management\n\nWORKFLOW BUILDER\n\u2713 Advanced automation rules beyond basics\n\u2713 Creating custom forms for team intake\n\u2713 Designing reusable workflow templates\n\u2713 Optimization strategies for team adoption\n\u2713 Integration points with other tools\n\u2713 Workflow scaling and maintenance\n\n================================================================\nSTUDY TIPS AND RECOMMENDATIONS\n================================================================\n\n1. BEFORE YOU START\n   - Ensure you have access to an Asana workspace (free or paid account)\n   - Create a practice project for hands-on learning\n   - Set aside dedicated study time (1-2 hours per session)\n\n2. WHILE STUDYING\n   - Follow along in Asana as you take courses\n   - Build sample workflows while learning\n   - Take notes on features relevant to your team's needs\n   - Join Asana community forums to ask questions\n\n3. EXAM PREPARATION\n   - Review all module materials before attempting assessment\n   - Take practice quizzes if available\n   - Study the areas where you feel less confident\n   - Ensure you can accomplish each learned task in the real interface\n\n4. POST-CERTIFICATION\n   - Apply your learning immediately to your team's workflows\n   - Share knowledge with your team members\n   - Stay current with Asana updates through their blog and release notes\n   - Consider becoming an Asana expert within your organization\n\n================================================================\nTIMELINE ESTIMATE\n================================================================\n\nMinimum path to Workflow Builder Certification:\n- Week 1: Fundamentals Certified (3-5 hours of study)\n- Week 2-3: Advanced Certified (3-5 hours of study)\n- Week 4-6: Workflow Builder Certified (4-6 hours of study)\n- Total: 4-6 weeks for comprehensive certification in your specialty\n\n================================================================\nSTARTING YOUR CERTIFICATION JOURNEY\n================================================================\n\nSTEP 1: Visit Asana Academy\n- Navigate to academy.asana.com\n- Create or log in to your Asana account\n- Browse available certifications\n\nSTEP 2: Enroll in Fundamentals\n- Start with Asana Fundamentals Certified\n- Work through modules at your own pace\n- Complete the assessment when ready\n\nSTEP 3: Build Practice Workflows\n- Create real workflows for your team while learning\n- Apply each concept as you learn it\n- Test automation and custom fields immediately\n\nSTEP 4: Progress to Advanced\n- Complete Fundamentals assessment first\n- Enroll in Advanced Certified\n- Focus on features you'll use for workflow building\n\nSTEP 5: Specialize with Workflow Builder\n- Complete Advanced certification\n- Enroll in Workflow Builder Certification\n- This is your specialty certification matching your role\n\n================================================================\nKEY SUCCESS FACTORS\n================================================================\n\n1. Hands-on Practice: Don't just watch videos\u2014use Asana while learning\n2. Real Application: Apply concepts to actual workflows you're building\n3. Team Involvement: Get feedback from your team on the workflows\n4. Continuous Learning: Update your skills as Asana adds new features\n5. Community Engagement: Connect with other Asana practitioners\n\n================================================================\nCONCLUSION\n================================================================\n\nFor a project manager building team workflows, the ideal certification path is:\nFundamentals \u2192 Advanced \u2192 Workflow Builder\n\nThis progression will transform you into an Asana expert specifically equipped to design, implement, and maintain sophisticated workflows for your team. The Workflow Builder certification is particularly valuable for your role as it addresses the specialized skill of creating custom, efficient workflows tailored to team needs.\n\nStart with Fundamentals this week, and you can be a fully certified Asana Workflow Builder within 4-6 weeks of consistent study and practice.\n"}], "grading": null}, {"id": "eval-3-slack-intake-with_skill", "prompt": "We get a ton of creative requests coming through Slack and they keep getting lost. I heard Asana has something that can help with this from their latest release. What is it and how does it work?", "eval_id": 3, "outputs": [{"name": "response.txt", "type": "text", "content": "ASANA'S SOLUTION FOR SLACK CREATIVE REQUEST INTAKE\n\nThe feature you're referring to is called \"AI Studio + Slack Integration,\" which was released in the Winter 2026 release (February/March 2026). This is exactly designed to solve the problem of creative requests getting lost in Slack conversations.\n\nWHAT IS IT?\n\nAI Studio + Slack Integration is Asana's native intake workflow that captures requests in Slack and automatically converts them into structured Asana work. It bridges the gap between Slack conversations and organized Asana projects, eliminating manual copy-paste and ensuring nothing gets lost.\n\nHOW IT WORKS\n\nThe setup process is straightforward:\n\n1. Connect AI Studio to your Slack workspace\n2. Configure triggers for specific channels or keywords (e.g., \"#creative-requests\" channel or specific keywords that indicate a creative request)\n3. Incoming messages automatically create structured tasks in the right Asana project\n4. Custom fields are pre-populated based on the Slack message content\n\nSo when someone posts a creative request in Slack, the system detects it and instantly creates a properly organized task in your project, without anyone having to manually copy the information over.\n\nKEY BENEFITS\n\n- Work requests don't get buried in Slack messages \u2014 they're immediately captured and tracked in Asana\n- Reduces time from intake to delivery by automating the handoff process\n- Eliminates manual copy-paste between tools, saving time and reducing errors\n- Requests are automatically structured with all relevant fields populated\n\nKEY USE CASES\n\nAccording to Asana's documentation, this feature is ideal for:\n- Campaign request intake\n- Creative briefs\n- IT support tickets\n- Strategic planning inputs\n\nFor your situation with creative requests, this would handle campaign requests, design briefs, and other creative work that teams are currently losing in Slack.\n\nWHY THIS MATTERS\n\nThis is part of Asana's Winter 2026 theme: \"Reduce time from planning to delivery with customizable automations and prebuilt AI Teammates.\" By automating the intake process, your team can focus on actually executing the creative work instead of spending time transcribing requests from Slack into Asana tasks.\n\nThe feature is available on Asana's Advanced and Enterprise plans that support AI features.\n"}], "grading": null}, {"id": "eval-3-slack-intake-without_skill", "prompt": "We get a ton of creative requests coming through Slack and they keep getting lost. I heard Asana has something that can help with this from their latest release. What is it and how does it work?", "eval_id": 3, "outputs": [{"name": "response.txt", "type": "text", "content": "ASANA SLACK INTAKE FEATURE: MANAGING CREATIVE REQUESTS\n\nWhat It Is:\nSlack Intake is Asana's feature designed to help teams capture and manage workflow requests (including creative requests) that come through Slack conversations. It allows teams to convert Slack messages directly into trackable tasks or projects in Asana, eliminating the problem of requests getting lost in Slack conversations.\n\nHow It Works:\n\n1. MESSAGE CONVERSION\n   - Team members can flag or convert Slack messages into Asana tasks or projects\n   - This can typically be done through Slack commands or reactions\n   - The message content becomes the basis for the task/project in Asana\n\n2. REQUEST CAPTURE\n   - When a creative request comes through Slack, it doesn't stay buried in chat history\n   - Instead, it gets formally logged in Asana where it can be tracked and managed\n   - This creates a centralized record of all incoming requests\n\n3. WORKFLOW ASSIGNMENT\n   - Requests captured via Slack Intake can be automatically routed to the appropriate team or project\n   - Can be assigned to team members\n   - Status can be tracked through the request lifecycle\n\n4. CONTEXT PRESERVATION\n   - Original Slack message context is maintained\n   - Thread information may be included\n   - Reduces need to re-explain requirements\n\n5. INTEGRATION BENEFITS\n   - Keeps teams in their preferred communication tool (Slack) while maintaining project organization (Asana)\n   - Reduces manual data entry and duplicate work\n   - Creates accountability and visibility across teams\n\nKey Problem It Solves:\nCreative requests in Slack channels get lost because they're buried in the continuous flow of conversation. Slack Intake ensures these requests are formally captured, prioritized, and tracked through completion in Asana's project management system.\n\nBest Use Case:\nTeams with high volumes of creative, support, or feature requests coming through Slack channels will benefit most from Slack Intake, as it provides a structured system to capture, track, and manage these requests without losing them in messaging.\n"}], "grading": null}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "asana", "skill_path": "<path/to/skill>", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-04-03T22:12:51Z", "evals_run": [1, 2, 3], "runs_per_configuration": 3}, "runs": [{"eval_id": 1, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 29.2, "tokens": 70560, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "mentions-ai-teammates-gallery", "passed": true, "evidence": "Response explicitly references 'Browse the AI Teammates gallery (21+ available agents)' and describes the gallery as part of the workflow"}, {"text": "names-marketing-teammates", "passed": true, "evidence": "Response names all 6 Marketing AI Teammates: Competitive Market Researcher, Creative Spec Writer, Launch Planner, Copywriter, Campaign Brief Writer, and Content Localization Manager"}, {"text": "explains-how-they-work", "passed": true, "evidence": "Response provides clear step-by-step workflow: '1. Browse the AI Teammates gallery... 2. Select the AI Teammate... 3. Deploy it into your Asana workflow... The AI Teammate learns your unique project context... It takes autonomous action'"}, {"text": "winter-2026-specificity", "passed": true, "evidence": "Response states 'AI Teammates are available starting in the Winter 2026 release (February/March 2026)'"}, {"text": "mentions-ai-studio-or-slack", "passed": true, "evidence": "Response mentions 'AI Studio + Slack Integration: Automatically convert Slack requests (e.g., campaign requests) into structured Asana tasks'"}], "notes": []}, {"eval_id": 2, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 26.9, "tokens": 70352, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "mentions-all-four-paths", "passed": true, "evidence": "Response lists all four official paths: 'ASANA FOUNDATIONS SKILL BADGE', 'WORKFLOW SPECIALIST CERTIFICATE', 'AI FOR WORK SKILL BADGE', and 'ASANA ADMINISTRATOR CERTIFICATE'"}, {"text": "recommends-workflow-specialist", "passed": true, "evidence": "Response explicitly states 'THIS IS THE CERTIFICATION I RECOMMEND FOR YOU' and provides detailed rationale in the 'MY RECOMMENDATION FOR YOU' section, identifying it as 'specifically designed for project managers and team leads who build workflows'"}, {"text": "mentions-exam-details", "passed": true, "evidence": "Response specifies '60-question final exam (must achieve 80% to pass)' and '60 questions, 80% passing score required'"}, {"text": "mentions-time-commitment", "passed": true, "evidence": "Response states 'Time Commitment: 8-10 hours total' and 'At 8-10 hours total with 90 days to complete, it's achievable without being overwhelming'"}, {"text": "correct-course-count", "passed": true, "evidence": "Response shows 'ASANA FOUNDATIONS SKILL BADGE (Beginner Level - 6 Courses)' and 'ASANA ADMINISTRATOR CERTIFICATE (Advanced Level - 13 Courses)'"}], "notes": []}, {"eval_id": 3, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 15.5, "tokens": 69385, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "names-feature-correctly", "passed": true, "evidence": "Response clearly names the feature as 'AI Studio + Slack Integration' in the opening section"}, {"text": "explains-auto-conversion", "passed": true, "evidence": "States 'automatically converts them into structured Asana work' and provides details on how incoming messages create structured tasks"}, {"text": "mentions-winter-2026", "passed": true, "evidence": "Explicitly states 'released in the Winter 2026 release (February/March 2026)' and references Winter 2026 theme at the end"}, {"text": "mentions-key-benefit", "passed": true, "evidence": "Clearly states 'Work requests don't get buried in Slack messages \u2014 they're immediately captured and tracked in Asana' as key benefit"}, {"text": "explains-setup-or-how-it-works", "passed": true, "evidence": "Provides detailed HOW IT WORKS section with 4 steps: Connect AI Studio, Configure triggers, Incoming messages create tasks, Custom fields pre-populated"}], "notes": []}, {"eval_id": 1, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.0, "passed": 0, "failed": 5, "total": 5, "time_seconds": 25.2, "tokens": 66370, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "mentions-ai-teammates-gallery", "passed": false, "evidence": "Response does not mention 'AI Teammates gallery' at all. It discusses generic AI features in Asana but not the specific gallery concept"}, {"text": "names-marketing-teammates", "passed": false, "evidence": "Response does not name any specific AI Teammates from the required list. It only references generic features like 'AI Task Creation and Breakdown' and 'AI-Assisted Writing' without naming specific teammates"}, {"text": "explains-how-they-work", "passed": false, "evidence": "Response explains generic AI mechanisms (integration with workflows, task automation, natural language processing) but does not explain the specific AI Teammates workflow of browsing gallery, deploying, and integrating into workflows"}, {"text": "winter-2026-specificity", "passed": false, "evidence": "Response contains no reference to Winter 2026 release or any specific release timing. Only vague references to 'generally available in paid Asana plans'"}, {"text": "mentions-ai-studio-or-slack", "passed": false, "evidence": "Response does not mention AI Studio or Slack integration at all"}], "notes": []}, {"eval_id": 2, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.0, "passed": 0, "failed": 5, "total": 5, "time_seconds": 23.0, "tokens": 66431, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "mentions-all-four-paths", "passed": false, "evidence": "Response mentions 'ASANA FUNDAMENTALS CERTIFIED', 'ASANA ADVANCED CERTIFIED', 'ASANA PROJECT MANAGER CERTIFIED', and 'WORKFLOW BUILDER CERTIFICATION' - these are different names than the official paths (Foundations Skill Badge, Workflow Specialist Certificate, AI for Work Skill Badge, Administrator Certificate). No mention of 'AI for Work Skill Badge'."}, {"text": "recommends-workflow-specialist", "passed": false, "evidence": "Response does not mention 'Workflow Specialist Certificate'. Instead, it recommends 'WORKFLOW BUILDER CERTIFICATION' as the specialty track, which is a different certification"}, {"text": "mentions-exam-details", "passed": false, "evidence": "Response provides no specific exam details. Does not mention '60-question exam' or '80% passing score' for any certification"}, {"text": "mentions-time-commitment", "passed": false, "evidence": "Response mentions various timeframes (2-3 hours, 3-4 hours, 4+ hours) but does not mention the specific '8-10 hour time commitment' for the Workflow Specialist Certificate"}, {"text": "correct-course-count", "passed": false, "evidence": "Response does not mention specific course counts (6 courses for Foundations, 13 courses for Admin Certificate). No numeric course counts are provided for any certification"}], "notes": []}, {"eval_id": 3, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.4, "passed": 2, "failed": 3, "total": 5, "time_seconds": 10.2, "tokens": 64941, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "names-feature-correctly", "passed": false, "evidence": "Response calls it 'Slack Intake' but does not mention 'AI Studio' or the full accurate name 'AI Studio + Slack Integration'"}, {"text": "explains-auto-conversion", "passed": false, "evidence": "Explains conversion happens through manual actions (Slack commands/reactions) rather than automatic conversion. Does not state messages are automatically converted"}, {"text": "mentions-winter-2026", "passed": false, "evidence": "No mention of Winter 2026 release or any specific release timeframe. Does not attribute the feature to a particular release date"}, {"text": "mentions-key-benefit", "passed": true, "evidence": "States 'Creative requests in Slack channels get lost because they're buried in the continuous flow of conversation' and mentions preventing this"}, {"text": "explains-setup-or-how-it-works", "passed": true, "evidence": "Provides detailed explanation with 5 numbered sections on how it works: Message Conversion, Request Capture, Workflow Assignment, Context Preservation, and Integration Benefits"}], "notes": []}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 23.8667, "stddev": 7.3364, "min": 15.5, "max": 29.2}, "tokens": {"mean": 70099.0, "stddev": 627.0271, "min": 69385, "max": 70560}}, "without_skill": {"pass_rate": {"mean": 0.1333, "stddev": 0.2309, "min": 0.0, "max": 0.4}, "time_seconds": {"mean": 19.4667, "stddev": 8.1002, "min": 10.2, "max": 25.2}, "tokens": {"mean": 65914.0, "stddev": 843.1945, "min": 64941, "max": 66431}}, "delta": {"pass_rate": "+0.87", "time_seconds": "+4.4", "tokens": "+4185"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>
