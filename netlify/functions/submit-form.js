@@ -111,11 +111,11 @@ const EVENT_LOCATION_FIELD_ID = '1215734263172360'; // "Event Location" (text) �
 //   EXACTLY (note the en-dash "–"). Until filled, budget stays in the description only.
 const BUDGET_FIELD_ID = '1215734270464338'; // "Budget Range" single-select
 const BUDGET_OPTION_IDS = {
-  // 'Under $5,000':    '',
-  // '$5,000–$10,000':  '',
-  // '$10,000–$20,000': '',
-  // '$20,000+':        '',
-  // 'Flexible / Open': '',
+  'Under $5,000':    '1215734270464339',
+  '$5,000–$10,000':  '1215734270464340', // Asana option is named "5,000–$10,000"
+  '$10,000–$20,000': '1215734270464341',
+  '$20,000+':        '1215734270464342',
+  'Flexible / Open': '1215734270464343',
 };
 
 // -----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ const REQUEST_TYPES = {
       'Check travel/lodging needs',
       'Check sound/stage/media requirements',
       'Send more info request if needed',
-      'Submit for leadership approval',
+      { name: 'Leadership Sign-Off — Approve / Request changes / Decline', approval: true },
       'Send response',
       'Send proposal/agreement if approved',
       'Set follow-up date',
@@ -591,15 +591,20 @@ async function createChecklistSubtasks(parentGid, requestType) {
   const items = (REQUEST_TYPES[requestType] || {}).checklist || [];
   const deadline = Date.now() + 6500; // keep us comfortably under the 10s budget
   const created = [];
-  for (const name of items) {
+  for (const item of items) {
     if (Date.now() > deadline) {
       console.warn(`[asana-intake] subtask budget hit; ${items.length - created.length} item(s) not created for ${parentGid}`);
       break;
     }
+    // Each item is a plain string (normal subtask) OR { name, approval: true },
+    // which becomes an Asana approval task (Approve / Request changes / Reject).
+    const name = typeof item === 'string' ? item : item.name;
+    const data = { name };
+    if (item && item.approval) data.resource_subtype = 'approval';
     try {
       await asanaFetch(`/tasks/${parentGid}/subtasks`, {
         method: 'POST',
-        body: JSON.stringify({ data: { name } }),
+        body: JSON.stringify({ data }),
       }, 5000);
       created.push(name);
     } catch (err) {
