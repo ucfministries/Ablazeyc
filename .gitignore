@@ -58,3 +58,11 @@ site/assets/photos/hero-ayc.png
 site/assets/photos/hero-alto.png
 site/assets/photos/hero-main.png
 site/assets/photos/hero-canttellitall.png
+
+# --- Env files (never commit real tokens) ---
+.env
+.env.local
+.env.*.local
+
+# --- Local dev helpers (machine-specific preview server) ---
+.claude/

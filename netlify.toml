@@ -8,6 +8,16 @@
   # No build step needed — these are static HTML files.
   # publish-time logging and asset bundling stay default.
 
+[build.environment]
+  # Pin Node 18+ so the serverless function can use the built-in global fetch().
+  NODE_VERSION = "20"
+
+[functions]
+  # Server-side handlers live here. submit-form.js receives website form
+  # submissions and creates Asana tasks (keeps the Asana token off the client).
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [build.processing]
   skip_processing = false
 

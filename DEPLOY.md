@@ -128,11 +128,73 @@ Use `ablazeyc.com/l` in social bios — shortest possible link.
 
 ## 7. Final pre-launch checklist
 
-- [ ] Update booking prices in `booking.html` and `index.html` (currently "starting at $3,500 / $7,500 / $15,000")
+- [ ] Confirm booking starting ranges in `booking.html` + `index.html` ($5K local / $12K regional / $25K+ fly-out — logistics-based for a youth ensemble: travel, lodging, meals, chaperones, musicians). Adjust as real quotes settle.
 - [ ] Confirm email aliases are working (send a test to each)
 - [ ] Set up Netlify form notifications for all 5 forms
 - [ ] Embed Klaviyo form for Society newsletter (3 places)
 - [ ] Connect custom domain (ablazeyc.com)
 - [ ] Test booking form submission end-to-end
 - [ ] Add Google Analytics or Plausible (optional but recommended)
-- [ ] Submit sitemap to Google Search Console for SEO
+- [ ] Submit sitemap to Google Search Console for SEO (`ablazeyc.com/sitemap.xml`)
+- [ ] (Optional) Add a Shopify Storefront token for live merch — see §8
+- [ ] (Optional) Add GA4 / Meta / TikTok pixel IDs — see §9
+
+---
+
+## 8. Shopify merch (Storefront API)
+
+The Merch page (`/merch`) and the homepage merch strip pull products from the
+Shopify collection at `merch.discovertheu.com/collections/all`.
+
+**Out of the box (no setup):** the page shows the three real products as a
+curated fallback grid that links straight to Shopify. Nothing to do — it works.
+
+**To show LIVE products (prices, sold-out states, new drops automatically):**
+
+1. Shopify admin → Settings → Apps and sales channels → **Develop apps** →
+   Create an app → **Configure Storefront API scopes** → enable
+   `unauthenticated_read_product_listings` → Install → copy the
+   **Storefront API access token**.
+2. Add the token one of two ways:
+   - **Simplest:** paste it into `site/shopify-config.js` → `storefrontToken`.
+   - **Cleaner (no token in repo):** Netlify → Site settings → Build & deploy →
+     Post processing → **Snippet injection** → add before `</head>`:
+     ```html
+     <script>window.ABLAZE_SHOPIFY_TOKEN="your_public_storefront_token";</script>
+     ```
+
+> ⚠️ Use ONLY the **Storefront** token. It is PUBLIC/publishable (safe in the
+> browser, like a Stripe publishable key). **Never** put an **Admin API** token
+> (starts with `shpat_`) in the site — it is a secret and would expose the store.
+
+If the token is missing or the API call fails, the page silently falls back to
+the curated grid. Checkout always happens on Shopify's secure pages.
+
+To keep the fallback prices/handles in sync, edit `fallbackProducts` in
+`site/shopify-config.js`.
+
+---
+
+## 9. Analytics & tracking
+
+Tracking is wired but **off by default** (no IDs committed). The site fires
+clean events for: `listen_now_click`, `shop_merch_click`, `product_click`,
+`book_ablaze_click`, `sponsor_click`, `press_kit_click`, `join_society_click`,
+plus `form_submit`. UTM params are captured on landing and carried onto
+outbound store/streaming links automatically.
+
+**To turn it on**, add your IDs one of two ways:
+
+- Edit the defaults at the top of `site/scripts.js`, **or**
+- Netlify Snippet Injection before `</head>`:
+  ```html
+  <script>window.ABLAZE_CONFIG={
+    ga4Id:"G-XXXXXXX",
+    metaPixelId:"123456789012345",
+    tiktokPixelId:"CXXXXXXXXXXXXXXXXX"
+  };</script>
+  ```
+
+Each pixel only loads when its ID is set. Until then, events log to the browser
+console (`[ablaze:track] ...`) so you can QA the funnel before launch. See
+`.env.example` for the full reference.

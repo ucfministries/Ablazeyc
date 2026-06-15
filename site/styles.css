@@ -196,7 +196,7 @@ section.cream .sec-head p{color:#3a342c}
 .tier .price small{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:6px}
 .tier ul{list-style:none;margin-top:26px;padding:0}
 .tier ul li{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;color:var(--ink-soft);display:flex;gap:12px;align-items:flex-start}
-.tier ul li::before{content:"🔥";font-size:14px;flex:none}
+.tier ul li::before{content:"";width:8px;height:8px;flex:none;margin-top:5px;border-radius:2px;background:linear-gradient(135deg,var(--fire-1),var(--fire-3));transform:rotate(45deg)}
 .tier .btn{margin-top:28px;width:100%;justify-content:center}
 
 /* FAQ */
@@ -270,6 +270,11 @@ section.cream .sec-head p{color:#3a342c}
 .form .full{grid-column:1/-1}
 .form .check{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--ink-soft)}
 .form .check input{width:auto;padding:0;margin-top:3px}
+/* Inline form success / error states (Asana intake) */
+.form-status{display:none;margin-top:14px;max-width:880px;padding:13px 18px;border-radius:10px;font-size:13px;line-height:1.55}
+.form-status.show{display:block}
+.form-status.error{background:rgba(168,22,11,.16);border:1px solid var(--crimson);color:#ffd9d2}
+.form-status.success{background:rgba(255,122,24,.12);border:1px solid var(--fire-2);color:var(--ink)}
 
 /* FOOTER */
 footer{background:#070403;padding:80px 0 30px;border-top:1px solid var(--line)}
@@ -372,3 +377,95 @@ footer{background:#070403;padding:80px 0 30px;border-top:1px solid var(--line)}
   .hero-bg-img,.hero::before{animation:none}
   .hero-bg-img.i1{opacity:1}
 }
+
+/* ============================================
+   PREMIUM UPGRADES — 2026 refresh
+   Shopify merch cards, mobile sticky CTA, social
+   proof, flame dividers, a11y. Appended so it
+   overrides/extends the base system above.
+   ============================================ */
+
+/* --- Accessibility --- */
+.skip-link{position:absolute;left:-999px;top:0;z-index:200;background:var(--fire-3);color:#0a0a0a;padding:12px 18px;border-radius:0 0 8px 0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
+.skip-link:focus{left:0}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--fire-3);outline-offset:3px;border-radius:4px}
+/* Don't show the focus ring on mouse click, only keyboard (focus-visible handles this) */
+
+/* --- Social proof strip (movement metrics band) --- */
+.proof{border-bottom:1px solid var(--line);background:#080503}
+.proof-track{max-width:1320px;margin:0 auto;padding:30px 28px;display:grid;grid-template-columns:repeat(5,1fr);gap:20px;text-align:center}
+@media (max-width:760px){.proof-track{grid-template-columns:repeat(2,1fr);gap:26px 16px}}
+.proof .num{font-family:'Anton',sans-serif;font-size:clamp(28px,4vw,40px);line-height:1;color:var(--fire-3)}
+.proof .lbl{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+/* --- Flame divider (signature section break) --- */
+.flame-divider{height:2px;border:0;background:linear-gradient(90deg,transparent,var(--crimson) 25%,var(--fire-2) 50%,var(--crimson) 75%,transparent);opacity:.7;position:relative}
+.flame-divider::after{content:"";position:absolute;top:50%;left:50%;width:10px;height:10px;border-radius:2px;background:linear-gradient(135deg,var(--fire-1),var(--fire-3));transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 0 6px var(--bg)}
+
+/* --- Shopify / merch product cards (shared by /merch and homepage) --- */
+.merch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media (max-width:900px){.merch-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.merch-grid{grid-template-columns:1fr}}
+.product{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#100a06,#0a0604);color:#fff;text-decoration:none;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+.product:hover{transform:translateY(-5px);border-color:var(--fire-2);box-shadow:0 24px 60px rgba(255,90,0,.18);opacity:1}
+.product .ph-wrap{position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;background:#1a0f08}
+.product .ph-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.product:hover .ph-wrap img{transform:scale(1.06)}
+.product .ph-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(135deg,#1a0f08,#0d0805);color:var(--fire-3);font-family:'Anton',sans-serif;font-size:26px;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
+.product .info{padding:20px 22px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+.product .tag-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;min-height:22px}
+.product .tag{display:inline-block;padding:4px 11px;background:linear-gradient(135deg,var(--fire-1),var(--fire-3));color:#0d0805;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px}
+.product .tag.sold{background:#2a211a;color:var(--muted)}
+.product h3{font-family:'Anton',sans-serif;font-size:21px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:0}
+.product .price{color:var(--fire-3);font-family:'Playfair Display',serif;font-size:19px}
+.product .price .compare{color:var(--muted);text-decoration:line-through;font-size:14px;margin-left:8px}
+.product .meta{color:var(--ink-soft);font-size:13px;line-height:1.45}
+.product .shop-cta{margin-top:14px;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:'Bebas Neue',sans-serif;letter-spacing:.18em;font-size:14px;color:var(--fire-3);text-transform:uppercase}
+.product:hover .shop-cta{color:var(--fire-2)}
+.product .shop-cta .arrow{transition:transform .25s ease}
+.product:hover .shop-cta .arrow{transform:translate(3px,-3px)}
+
+/* loading skeleton */
+.product.skeleton{pointer-events:none}
+.product.skeleton .ph-wrap,.product.skeleton .sk-line{background:linear-gradient(100deg,#140d08 30%,#23170d 50%,#140d08 70%);background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+.product.skeleton .info{gap:12px}
+.product.skeleton .sk-line{height:14px;border-radius:6px}
+.product.skeleton .sk-line.w60{width:60%}
+.product.skeleton .sk-line.w40{width:40%}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion: reduce){.product.skeleton .ph-wrap,.product.skeleton .sk-line{animation:none}}
+
+/* empty / error notice for merch grid */
+.merch-note{grid-column:1/-1;text-align:center;padding:48px 24px;border:1px dashed var(--line);border-radius:14px;background:#0d0805;color:var(--ink-soft)}
+.merch-note h3{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;color:#fff;margin-bottom:10px}
+.merch-note p{font-size:15px;line-height:1.6;max-width:520px;margin:0 auto 20px}
+
+/* --- Mobile sticky CTA bar (injected by scripts.js) --- */
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:55;display:none;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(8,5,3,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+.sticky-cta.show{transform:translateY(0)}
+.sticky-cta a{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 8px;border-radius:999px;font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;font-size:14px;text-transform:uppercase;text-align:center;line-height:1}
+.sticky-cta a.s-listen{background:transparent;color:var(--ink);border:1px solid rgba(245,241,234,.3)}
+.sticky-cta a.s-shop{background:transparent;color:var(--ink);border:1px solid rgba(245,241,234,.3)}
+.sticky-cta a.s-book{background:linear-gradient(135deg,var(--fire-1),var(--fire-3));color:#0a0a0a;font-weight:700}
+.sticky-cta a:active{transform:scale(.97)}
+@media (max-width:768px){.sticky-cta{display:flex}body.has-sticky-cta footer{padding-bottom:96px}}
+
+/* --- Small shared helpers --- */
+.pill-row{display:flex;gap:10px;flex-wrap:wrap}
+.tag{} /* keep .tag usable outside product */
+.kicker{font-family:'Bebas Neue',sans-serif;letter-spacing:.22em;text-transform:uppercase;font-size:14px;color:var(--fire-2)}
+.btn.btn-lg{padding:18px 32px;font-size:15px}
+@media (max-width:600px){.btn{padding:15px 24px}.hero .actions .btn{width:100%;justify-content:center}}
+
+/* --- Icon system (SVG sprite referenced via <use href="assets/icons/icons.svg#id">) --- */
+.i{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:none}
+.ico-svg{width:42px;height:42px;display:block}
+.pillar .ico{color:var(--fire-1)}
+.pillar:hover .ico{color:var(--fire-2)}
+.video .play svg{width:24px;height:24px;color:#fff;margin-left:2px}
+.contact-info .item .i,.contact-info .item .v .i{color:var(--fire-3);margin-right:8px}
+.socials a svg{width:16px;height:16px;display:block}
+.sticky-cta a svg{width:15px;height:15px;vertical-align:-.2em;margin-right:2px}
+.foot-col a .i{margin-right:7px;color:var(--fire-2)}
+.tier-sub{font-family:'Bebas Neue',sans-serif;letter-spacing:.18em;font-size:12px;text-transform:uppercase;color:var(--fire-2);margin-top:8px}
+
