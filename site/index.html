@@ -54,9 +54,14 @@
 <!-- HERO -->
 <header class="hero" id="top">
   <div class="hero-bg" aria-hidden="true">
-    <img class="hero-bg-img i1" src="assets/photos/hero-sing.jpg" alt="" loading="eager" decoding="async">
-    <img class="hero-bg-img i2" src="assets/photos/hero-ayc.jpg" alt="" loading="eager" decoding="async">
-    <img class="hero-bg-img i3" src="assets/photos/hero-alto.jpg" alt="" loading="eager" decoding="async">
+    <!-- Background performance loop. Until assets/video/hero-loop.* exist, the
+         poster still (hero-sing.jpg) displays — the hero never looks broken.
+         See assets/video/README.md for export specs. -->
+    <video class="hero-video" autoplay muted loop playsinline preload="auto"
+           poster="assets/photos/hero-sing.jpg">
+      <source src="assets/video/hero-loop.webm" type="video/webm">
+      <source src="assets/video/hero-loop.mp4" type="video/mp4">
+    </video>
   </div>
   <div id="embers"></div>
   <div class="wrap hero-grid">

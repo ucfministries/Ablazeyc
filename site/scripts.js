@@ -195,6 +195,19 @@
       }
     }
 
+    // HERO VIDEO — respect reduced-motion + Data Saver; poster stays as fallback
+    var hv = document.querySelector('.hero-video');
+    if (hv) {
+      var saveData = navigator.connection && navigator.connection.saveData;
+      if (reduceMotion || saveData) {
+        hv.removeAttribute('autoplay');
+        hv.pause();
+      } else {
+        var pv = hv.play();
+        if (pv && pv.catch) { pv.catch(function () {}); }
+      }
+    }
+
     // REVEAL ON SCROLL (with graceful fallbacks)
     var reveals = document.querySelectorAll('.reveal');
     if (reduceMotion || !('IntersectionObserver' in window)) {
