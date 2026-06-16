@@ -22,14 +22,18 @@ Thumbs.db
 *.zip
 
 # --- Specific large files at root we don't need on GitHub ---
-ABLAZE BIO.mp3
-Ablaze Album Cover.png
-allyours-ablaze_square.psd
-mark.png
-markellis2.png
-arlenemccoy.png
-ablaze_16_9.jpg
-ablaze_square.jpg
+# Anchored with leading / so they ONLY match the heavy masters at repo root and
+# never the web-optimized copies under site/assets/. (An unanchored
+# "Ablaze Album Cover.png" previously also matched site/assets/discography/,
+# which kept the live album art from ever deploying — now ablaze-album-cover.jpg.)
+/ABLAZE BIO.mp3
+/Ablaze Album Cover.png
+/allyours-ablaze_square.psd
+/mark.png
+/markellis2.png
+/arlenemccoy.png
+/ablaze_16_9.jpg
+/ablaze_square.jpg
 
 # --- Working folders that aren't part of the deployed site ---
 # Anchored with leading / so they only match at repo root, not under site/assets/
