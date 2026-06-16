@@ -395,5 +395,55 @@
         col.appendChild(pa);
       }
     });
+
+    // ------------------------------------------------------------------
+    // MUSIC CAROUSEL
+    // Turn each .music-grid into a single-row, arrow-scrollable shelf so
+    // releases never wrap to an awkward second row. Progressive: without
+    // JS the CSS flex row still scrolls (trackpad / touch swipe).
+    // ------------------------------------------------------------------
+    document.querySelectorAll('.music-grid').forEach(function (grid) {
+      if (grid.closest('.carousel')) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'carousel';
+      grid.parentNode.insertBefore(wrap, grid);
+      wrap.appendChild(grid);
+
+      function makeArrow(dir, label, glyph) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'carousel-arrow ' + dir;
+        b.setAttribute('aria-label', label);
+        b.innerHTML = glyph;
+        wrap.appendChild(b);
+        return b;
+      }
+      var prev = makeArrow('prev', 'Previous releases', '‹');
+      var next = makeArrow('next', 'More releases', '›');
+
+      function stepBy() {
+        var card = grid.querySelector('.album');
+        var gap = parseInt(getComputedStyle(grid).columnGap, 10) || 24;
+        return card ? card.getBoundingClientRect().width + gap : grid.clientWidth * 0.8;
+      }
+      function nudge(d) {
+        grid.scrollBy({ left: d * stepBy(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+      prev.addEventListener('click', function () { nudge(-1); });
+      next.addEventListener('click', function () { nudge(1); });
+
+      function update() {
+        var max = grid.scrollWidth - grid.clientWidth;
+        var overflow = max > 4;
+        prev.classList.toggle('is-hidden', !overflow || grid.scrollLeft <= 2);
+        next.classList.toggle('is-hidden', !overflow || grid.scrollLeft >= max - 2);
+      }
+      grid.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      grid.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', update, { once: true });
+      });
+      update();
+    });
   });
 })();
