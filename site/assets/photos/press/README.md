@@ -1,24 +1,24 @@
 # Press gallery photos
 
-Drop choir / performance photos here for the **Press → Visuals** gallery
-(`press.html`). Each photo becomes a real, browser-viewable web URL, e.g.
-`https://ablazeyc.com/assets/photos/press/choir-blue-stage.jpg`.
+Web-optimized choir / performance photos for the **Press → Visuals** gallery
+(`press.html`). Each is a real, browser-viewable URL, e.g.
+`https://ablazeyc.com/assets/photos/press/choir-red-group.jpg`.
 
-## Use web-friendly formats only
-Save as **.jpg**, **.png**, or **.webp** (NOT .heic / .tiff / RAW) so the
-images open in every browser and download cleanly from the lightbox.
+## In use now (added 2026-06-17)
+Camera originals were 28–30 MB; these are resampled to 2200px / ~600 KB for web.
+Full-res originals are preserved outside the deploy folder in
+`Ablaze Web/press-photo-originals/`.
 
-## Photos to add (from the June update set)
-Save the four new shots with these exact names and they'll slot into the
-front of the gallery as a new "the choir" page:
+| filename                   | photo                                          |
+|----------------------------|------------------------------------------------|
+| `choir-red-group.jpg`      | Full ensemble, red & black, white backdrop     |
+| `choir-fire-stage.jpg`     | Choir performing live, orange ties / fire screen |
+| `choir-red-ensemble.jpg`   | Smaller ensemble, red & black, cream backdrop  |
 
-| filename                    | photo                                              |
-|-----------------------------|----------------------------------------------------|
-| `choir-blue-stage.jpg`      | Choir on stage, arms crossed, blue light + mirror wall |
-| `choir-red-group.jpg`       | Full ensemble, red & black styling, white backdrop |
-| `choir-red-ensemble.jpg`    | Smaller group, red & black styling, cream backdrop  |
-| `choir-fire-stage.jpg`      | Choir singing, white shirts / orange ties, fire screen |
+(The blue-stage shot is already represented on page 1 by `hero-canttellitall.jpg`.)
 
-After the files are here, they get added to the `.gallery-track` in
-`press.html` (one `.gallery-cell` each) — see the existing cells for the
-pattern (`data-full` + `data-caption`).
+## Adding more
+Save as **.jpg / .png / .webp** (NOT .heic). If a file is over ~1.5 MB, resample:
+`sips -Z 2200 -s format jpeg -s formatOptions 78 in.jpg --out out.jpg`
+Then add one `.gallery-cell` per photo in `press.html` (copy an existing cell:
+`data-full` + `data-caption` + `<img>`). Six cells per `.gallery-page`.
