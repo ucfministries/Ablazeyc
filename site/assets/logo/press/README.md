@@ -1,42 +1,33 @@
 # Press / "Featured On & Covered By" logos
 
-The Press page logo wall (`press.html` → *Featured On & Covered By*) currently
-renders each outlet as a **white typographic wordmark** (using the site's own
-fonts) so every mark is guaranteed pure white and visually consistent. No
-full-color logo is shown in the UI.
+The Press page logo wall (`press.html` → *Featured On & Covered By*) renders white
+logos on a dark background. No full-color logo is shown in the UI.
 
-## Why wordmarks (for now)
-The original brand assets are full-color rasters (PNG/JPG/app-icons). There is no
-clean, automated way to recolor them to white on this machine (no ImageMagick /
-rsvg), and a CSS `invert` on color/JPEG sources looks muddy. Per the brand brief,
-the approved fallback is a premium white wordmark — done here — with the official
-white SVGs to be dropped in later.
+## Status
 
-## Source assets in this folder (reference only — NOT shown in the UI)
-| File | Source URL |
-|------|------------|
-| `fox-nation-source.png` | https://static-media.fox.com/foxnow/web/v3-2/img/network/fox-nation.png |
-| `wbrz-source.png` | https://www.wbrz.com/images/logo.png |
-| `louisiana-first-news-source.png` | Google Play listing icon |
-| `because-of-them-we-can-source.jpg` | https://www.becauseofthemwecan.com/wp-content/uploads/2023/06/logo.jpg |
-| `unfiltered-with-kiran-source.png` | Google Play listing icon |
-| Rolling Out | clearbit `logo.clearbit.com/rollingout.com` — download failed; brand assets: https://brandfetch.com/rollingout.com |
+**Official white SVGs in use (4):**
+| Outlet | File | Class |
+|--------|------|-------|
+| FOX Nation | `fox-nation-white.svg` | `mark` (square) |
+| WBRZ Channel 2 | `wbrz-white.svg` | `word` (wide) |
+| Rolling Out | `rolling-out-white.svg` | `word` (wide) |
+| Because Of Them We Can | `because-of-them-we-can-white.svg` | `mark` (square) |
 
-> These are **unverified third-party marks** kept only as a reference for
-> producing approved white versions. Do not publish them as-is, and confirm usage
-> rights before shipping any official logo.
+`.press-logo-image.mark` = 56px tall (square logos); `.press-logo-image.word` =
+32px tall (wide wordmark logos). Tuned for consistent visual weight.
 
-## TODO — replace wordmarks with official white SVGs
-When approved white SVGs exist, save them here with these exact names and swap the
-matching `<span class="press-logo-wordmark …">` in `press.html` for
-`<img class="press-logo-image" src="assets/logo/press/<name>" alt="<Outlet> logo">`:
+**White wordmark fallback (2 — still need official white SVGs):**
+| Outlet | Target file |
+|--------|-------------|
+| Louisiana First News | `louisiana-first-news-white.svg` |
+| Unfiltered with Kiran | `unfiltered-with-kiran-white.svg` |
 
-- `fox-nation-white.svg`
-- `wbrz-white.svg`
-- `louisiana-first-news-white.svg`
-- `rolling-out-white.svg`
-- `because-of-them-we-can-white.svg`
-- `unfiltered-with-kiran-white.svg`
+To swap a wordmark for an official logo: save the white SVG here with the target
+name, then in `press.html` replace that outlet's `<span class="press-logo-wordmark …">`
+with `<img class="press-logo-image word" src="assets/logo/press/<name>" alt="<Outlet> logo">`
+(use `mark` instead of `word` if the logo is square-ish).
 
-Keep marks a consistent height (~34px) and white (`#fff`); the card hover glow is
-handled by `.press-logo-card`.
+## Source assets (reference only — NOT shown in the UI)
+`*-source.png` / `*-source.jpg` are the original full-color marks pulled from each
+outlet, kept only as reference for producing approved white versions. Confirm usage
+rights before shipping any official logo.
