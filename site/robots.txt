@@ -1,6 +1,45 @@
+# Ablaze Youth Choir — robots.txt
+# We WANT to be found by search engines AND AI answer engines.
+
 User-agent: *
 Allow: /
 Disallow: /thank-you
 Disallow: /scholarship-apply
+
+# ── AI / answer-engine crawlers (explicitly welcomed) ──
+# Training + retrieval crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# Live "user asked a question right now" fetchers — these power citations
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
 
 Sitemap: https://ablazeyc.com/sitemap.xml

@@ -1,0 +1,17 @@
+{
+  "name": "Ablaze Youth Choir",
+  "short_name": "Ablaze YC",
+  "description": "A spirit-led youth worship movement out of United Christian Faith Ministries, Baton Rouge, LA.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/assets/icons/fire.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
