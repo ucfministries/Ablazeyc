@@ -17,20 +17,27 @@ Visitor → form → /.netlify/functions/submit-form → Asana task (+ checklist
 > **"Ablaze Website Intake & Booking Pipeline 2026-27"** project (`1215734352659379`, Social Media Team):
 > sections, Priority, Request Type, Source (= Website), Event Date, Event Location, Organization, and UTM
 > Campaign — plus a new **Director Inquiry** type for the "Mark Ellis Jr. / Our Director" contact option.
-> Still to do: set the env vars below; update the **Budget Range** field options to the booking-form tiers
-> and fill `BUDGET_OPTION_IDS`; (optional) add a "Director Inquiry" option to the Request Type field; deploy.
+> Still to do in the **Asana UI**: rename the **Budget Range** option labels to the booking-form tiers
+> (Under $7,500 / $7,500–$15,000 / $15,000–$30,000 / $30,000+ — the gids are already wired, renaming
+> keeps them); (optional) add a "Director Inquiry" option to the Request Type field and paste its gid
+> into `REQUEST_TYPE_OPTION_IDS`; delete the near-duplicate Event Team pipeline project.
 
 ## 1. Environment variables (required)
 
-Set these in **Netlify → Site settings → Environment variables** (production) or a local git‑ignored
+Set this in **Netlify → Site settings → Environment variables** (production) or a local git‑ignored
 `.env` for `netlify dev`. Never commit real values. See [`.env.example`](.env.example).
 
 | Variable | What it is |
 |---|---|
 | `ASANA_ACCESS_TOKEN` | Asana Personal Access Token (secret) |
-| `ASANA_WORKSPACE_ID` | Your Asana workspace / org ID |
-| `ASANA_PROJECT_ID` | The "Ablaze Website Intake & Booking Pipeline" project ID |
 | `FALLBACK_WEBHOOK_URL` | *(optional)* Slack/Zapier/Make webhook alerted if Asana ever fails |
+
+> **Workspace & project ids are in code, not env.** They live at the top of
+> `netlify/functions/submit-form.js` next to the section ids they belong with — a matched set.
+> (An `ASANA_PROJECT_ID` env var once pointed at the near-duplicate "…Booking Pipeline" Event Team
+> project, which made every section-membership create fail with a 400 and silently routed all
+> submissions to the fallback log.) Any `ASANA_WORKSPACE_ID` / `ASANA_PROJECT_ID` vars left in
+> Netlify are ignored and can be deleted.
 
 After deploy, the function lives at `https://ablazeyc.com/.netlify/functions/submit-form`.
 

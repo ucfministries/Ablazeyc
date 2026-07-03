@@ -24,8 +24,14 @@
 //     See .env.example and ASANA_SETUP.md.
 // -----------------------------------------------------------------------------
 const ASANA_ACCESS_TOKEN = process.env.ASANA_ACCESS_TOKEN || '';
-const ASANA_WORKSPACE_ID = process.env.ASANA_WORKSPACE_ID || '';
-const ASANA_PROJECT_ID   = process.env.ASANA_PROJECT_ID   || ''; // "Ablaze Website Intake & Booking Pipeline"
+// The project + section gids below are a MATCHED SET — the sections belong to
+// this exact project — so the project id lives in code next to them, not in an
+// env var where it can drift to a different project (a stale ASANA_PROJECT_ID
+// pointing at the near-duplicate "…Booking Pipeline" Event Team project makes
+// every section-membership create fail with a 400). Object ids aren't secrets;
+// only the token is, and the token stays env-only.
+const ASANA_WORKSPACE_ID = '1207597362503037'; // UCF Ministries
+const ASANA_PROJECT_ID   = '1215734352659379'; // "Ablaze Website Intake & Booking Pipeline 2026-27" (Social Media Team)
 
 // -----------------------------------------------------------------------------
 //  2) PROJECT CONFIG — paste your Asana IDs here.
@@ -106,16 +112,19 @@ const SOURCE_WEBSITE_OPTION_ID = '1215734352680017'; // "Website"
 const EVENT_DATE_FIELD_ID     = '1215734263172355'; // "Event Date" (date) — bookings only
 const EVENT_LOCATION_FIELD_ID = '1215734263172360'; // "Event Location" (text) — venue, city, state
 
-// ► BUDGET — fill these AFTER updating the Asana "Budget Range" options to match
-//   the booking form ($5k–$20k+ tiers). Keys must match the form's <option> text
-//   EXACTLY (note the en-dash "–"). Until filled, budget stays in the description only.
+// ► BUDGET — keys must match the booking form's <option> text EXACTLY (note the
+//   en-dash "–"). Mapped rank-for-rank onto the project's 5 "Budget Range"
+//   options. ⚠️ The Asana option LABELS still show the old $5k/$10k/$20k tiers —
+//   rename them in the Asana UI to the values below (renaming keeps the same
+//   gids, so nothing here changes): Under $7,500 · $7,500–$15,000 ·
+//   $15,000–$30,000 · $30,000+ · Flexible / Open.
 const BUDGET_FIELD_ID = '1215734270464338'; // "Budget Range" single-select
 const BUDGET_OPTION_IDS = {
-  'Under $5,000':    '1215734270464339',
-  '$5,000–$10,000':  '1215734270464340', // Asana option is named "5,000–$10,000"
-  '$10,000–$20,000': '1215734270464341',
-  '$20,000+':        '1215734270464342',
-  'Flexible / Open': '1215734270464343',
+  'Under $7,500':     '1215734270464339', // Asana label (rename me): "Under $5,000"
+  '$7,500–$15,000':   '1215734270464340', // Asana label (rename me): "5,000–$10,000"
+  '$15,000–$30,000':  '1215734270464341', // Asana label (rename me): "$10,000–$20,000"
+  '$30,000+':         '1215734270464342', // Asana label (rename me): "$20,000+"
+  'Flexible / Open':  '1215734270464343',
 };
 
 // -----------------------------------------------------------------------------
@@ -636,7 +645,8 @@ function isRateLimited(ip) {
 // -----------------------------------------------------------------------------
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(204, {});
-  if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Method not allowed' });
+  // `v` is a deploy marker so a plain GET can confirm which revision is live.
+  if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Method not allowed', v: 2 });
 
   // Parse JSON body.
   let fields;
@@ -699,11 +709,15 @@ exports.handler = async (event) => {
     //  Asana rejected/timed out. We do NOT lose the submission:
     //   1) Log the full payload as structured JSON — recoverable from the
     //      Netlify function logs (dashboard → Functions → submit-form → logs,
-    //      or `netlify functions:log submit-form`).
+    //      or `netlify functions:log submit-form`). Note: log retention is
+    //      short (~24h on starter plans) — logs are the backstop, not the store.
     //   2) Optionally forward it to FALLBACK_WEBHOOK_URL (Slack/Zapier/email)
     //      if that env var is set.
-    //   3) Still return success so the visitor sees a friendly confirmation —
-    //      their submission reached us and is safely recorded.
+    //   3) Return { fallback:true } with a 503 so the browser re-submits the
+    //      native form and Netlify Forms captures it DURABLY (dashboard →
+    //      Forms). The visitor lands on the same thank-you page either way —
+    //      returning 200 here would skip that fallback and strand the
+    //      submission in expiring logs.
     // -------------------------------------------------------------------------
     console.error('[asana-intake] ASANA_DELIVERY_FAILED', err && err.message);
     console.error('[asana-intake] SUBMISSION_PAYLOAD ' + JSON.stringify({ requestType, fields, at: new Date().toISOString() }));
@@ -726,6 +740,6 @@ exports.handler = async (event) => {
       }
     }
 
-    return json(200, { ok: true, delivered: false });
+    return json(503, { ok: false, delivered: false, fallback: true });
   }
 };
