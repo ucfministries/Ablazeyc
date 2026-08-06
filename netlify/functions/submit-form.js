@@ -31,7 +31,10 @@ const ASANA_ACCESS_TOKEN = process.env.ASANA_ACCESS_TOKEN || '';
 // every section-membership create fail with a 400). Object ids aren't secrets;
 // only the token is, and the token stays env-only.
 const ASANA_WORKSPACE_ID = '1207597362503037'; // UCF Ministries
-const ASANA_PROJECT_ID   = '1215734352659379'; // "Ablaze Website Intake & Booking Pipeline 2026-27" (Social Media Team)
+// The original "…2026-27" Social Media Team project (1215734352659379) was
+// deleted in Asana in July 2026 — the Event Team project below is the only
+// surviving intake board, and the Netlify token's user is a member of it.
+const ASANA_PROJECT_ID   = '1215734657480092'; // "Ablaze Website Intake & Booking Pipeline" (Event Team, public to workspace)
 
 // -----------------------------------------------------------------------------
 //  2) PROJECT CONFIG — paste your Asana IDs here.
@@ -46,15 +49,21 @@ const ASANA_PROJECT_ID   = '1215734352659379'; // "Ablaze Website Intake & Booki
 //   HOW TO FIND A SECTION ID: open the project in Asana, switch to Board view,
 //   click a section's header (or any task in it) and read the number in the URL,
 //   OR call:  GET https://app.asana.com/api/1.0/projects/<PROJECT_ID>/sections
+//   BOARD (July 2026): consolidated to 5 lanes — 📥 New · 🔍 In Review ·
+//   📤 Respond / Follow-Up · ✅ Booked / Confirmed · 🗂 Closed. Every website
+//   submission lands in 📥 New for triage; a human moves it right from there
+//   (vetting stages live in each booking card's subtask checklist, not in
+//   separate columns). The old per-type sections were deleted.
+const SECTION_NEW = '1215734608666528'; // 📥 New (was "New Website Submission" — same gid)
 const SECTIONS = {
-  'Booking Request':              '1215734059591377', // Booking Review
-  'Press / Media Inquiry':        '1215734059591376', // Needs Triage
-  'Sponsorship / Donor Inquiry':  '1215734059591376', // Needs Triage
-  'Merch / Store Question':       '1215734059591376', // Needs Triage
-  'General Contact':              '1215734352659405', // New Website Submission
-  'Ablaze Society / Fan Signup':  '1215734352659405', // New Website Submission
-  'Testimony / Story Submission': '1215734059591376', // Needs Triage
-  'Director Inquiry':             '1215734059591376', // Needs Triage (you assign Mark Ellis Jr.)
+  'Booking Request':              SECTION_NEW,
+  'Press / Media Inquiry':        SECTION_NEW,
+  'Sponsorship / Donor Inquiry':  SECTION_NEW,
+  'Merch / Store Question':       SECTION_NEW,
+  'General Contact':              SECTION_NEW,
+  'Ablaze Society / Fan Signup':  SECTION_NEW,
+  'Testimony / Story Submission': SECTION_NEW,
+  'Director Inquiry':             SECTION_NEW, // (you assign Mark Ellis Jr. at triage)
 };
 
 // ► PRIORITY (optional) — Asana "priority" is a custom field, so it has a
@@ -67,11 +76,17 @@ const SECTIONS = {
 //   HOW TO FIND THESE: GET https://app.asana.com/api/1.0/projects/<PROJECT_ID>/custom_field_settings
 //   The response lists each custom field's gid and, for enum fields, every
 //   option's gid.
-const PRIORITY_FIELD_ID = '1215734059591405'; // "Priority" single-select
+// ⚠️ All custom-field IDs below are DISABLED ('') as of July 2026: they belonged
+// to the deleted "…2026-27" project and died with it. The current Event Team
+// project has NO custom fields — sending any of these gids would 400 the whole
+// task create. Every value still lands in the task description. To re-enable:
+// add the fields to the project in Asana, then paste the new gids here
+// (GET /projects/1215734657480092/custom_field_settings).
+const PRIORITY_FIELD_ID = ''; // was "Priority" single-select on the deleted project
 const PRIORITY_OPTION_IDS = {
-  High:   '1215734263172337', // "High"
-  Medium: '1215734059591407', // Asana has no "Medium" — mapped to "Normal"
-  Low:    '1215734059591406', // "Low"
+  High:   '',
+  Medium: '',
+  Low:    '',
 };
 
 // ► CUSTOM FIELDS (optional) — map a submitted form field name to an Asana
@@ -83,8 +98,7 @@ const PRIORITY_OPTION_IDS = {
 //     };
 //   (Same lookup as priority: .../custom_field_settings)
 const CUSTOM_FIELDS = {
-  org:          '1215734263172365', // Organization / Church / School (text)
-  utm_campaign: '1215734054708848', // UTM Campaign (text)
+  // org / utm_campaign field gids died with the deleted project — see note above.
 };
 
 // ► STRUCTURED FIELDS (enum / date / composed text) — set in addition to the
@@ -92,25 +106,16 @@ const CUSTOM_FIELDS = {
 //   can fire. These need value resolution (an enum option gid, a { date } object,
 //   etc.) that the plain-text CUSTOM_FIELDS map above can't do. Applied in
 //   createAsanaTask().
-const REQUEST_TYPE_FIELD_ID = '1215734059591392'; // "Request Type" single-select
-const REQUEST_TYPE_OPTION_IDS = {
-  'Booking Request':              '1215734059591393',
-  'Press / Media Inquiry':        '1215734059591394',
-  'Sponsorship / Donor Inquiry':  '1215734059591395',
-  'Merch / Store Question':       '1215734059591396',
-  'General Contact':              '1215734059591397',
-  'Ablaze Society / Fan Signup':  '1215734059591398', // Asana option "Ablaze Society Signup"
-  'Testimony / Story Submission': '1215734059591399',
-  // 'Director Inquiry': '',  // ← add a "Director Inquiry" option in Asana, then paste its gid
-};
+const REQUEST_TYPE_FIELD_ID = ''; // disabled — see note above
+const REQUEST_TYPE_OPTION_IDS = {};
 
 // Source is ALWAYS "Website" for these submissions. (The booking form's "How did
 // you hear about us?" answer is marketing attribution and stays in the notes.)
-const SOURCE_FIELD_ID          = '1215734352680016'; // "Source" single-select
-const SOURCE_WEBSITE_OPTION_ID = '1215734352680017'; // "Website"
+const SOURCE_FIELD_ID          = ''; // disabled — see note above
+const SOURCE_WEBSITE_OPTION_ID = '';
 
-const EVENT_DATE_FIELD_ID     = '1215734263172355'; // "Event Date" (date) — bookings only
-const EVENT_LOCATION_FIELD_ID = '1215734263172360'; // "Event Location" (text) — venue, city, state
+const EVENT_DATE_FIELD_ID     = ''; // disabled — see note above
+const EVENT_LOCATION_FIELD_ID = ''; // disabled — see note above
 
 // ► BUDGET — keys must match the booking form's <option> text EXACTLY (note the
 //   en-dash "–"). Mapped rank-for-rank onto the project's 5 "Budget Range"
@@ -118,14 +123,49 @@ const EVENT_LOCATION_FIELD_ID = '1215734263172360'; // "Event Location" (text) �
 //   rename them in the Asana UI to the values below (renaming keeps the same
 //   gids, so nothing here changes): Under $7,500 · $7,500–$15,000 ·
 //   $15,000–$30,000 · $30,000+ · Flexible / Open.
-const BUDGET_FIELD_ID = '1215734270464338'; // "Budget Range" single-select
-const BUDGET_OPTION_IDS = {
-  'Under $7,500':     '1215734270464339', // Asana label (rename me): "Under $5,000"
-  '$7,500–$15,000':   '1215734270464340', // Asana label (rename me): "5,000–$10,000"
-  '$15,000–$30,000':  '1215734270464341', // Asana label (rename me): "$10,000–$20,000"
-  '$30,000+':         '1215734270464342', // Asana label (rename me): "$20,000+"
-  'Flexible / Open':  '1215734270464343',
-};
+const BUDGET_FIELD_ID = ''; // disabled — see note above
+const BUDGET_OPTION_IDS = {};
+
+// -----------------------------------------------------------------------------
+//  2b) NOTIFICATIONS — who gets emailed about every website request
+//
+//  TWO INDEPENDENT CHANNELS, on purpose. Either one alone is enough to know a
+//  request came in; together they survive the failure of the other.
+//
+//   A) ASANA FOLLOWERS (always on, no extra secrets). Both addresses below are
+//      real members of the UCF Ministries Asana workspace, so adding them as
+//      followers makes Asana itself send them a "new task" email containing the
+//      full submission and a link to the card. Added AFTER the task is created
+//      (see createAsanaTask) so a bad/removed user gid can never 400 the create
+//      and cost us a submission — the same lesson the custom-field gids taught.
+//
+//   B) DIRECT TRANSACTIONAL EMAIL (opt-in). Set RESEND_API_KEY *or*
+//      SENDGRID_API_KEY in Netlify and this function also sends its own branded
+//      notification — including on the Asana-failed path, where channel A can't
+//      fire by definition. Unset = silently skipped, nothing breaks.
+//
+//  A third safety net lives OUTSIDE this file: Netlify form-submission email
+//  notifications to the same two addresses (Site settings → Forms →
+//  Notifications). Those cover the one case neither channel here can — the
+//  browser never reaching this function at all, so the submission lands in
+//  Netlify Forms via the native fallback. See ASANA_SETUP.md → Notifications.
+// -----------------------------------------------------------------------------
+const NOTIFY_EMAILS = [
+  'markellis0404@gmail.com',      // Mark Ellis Jr. — Director
+  'worship@ucfministries.org',    // Worship (Sandra McKinley)
+];
+
+// Asana user gids for the addresses above (workspace 1207597362503037). Gids are
+// used rather than emails so a display-name/email change in Asana can't silently
+// stop the notifications. Verified 2026-07-22 via GET /users.
+const NOTIFY_FOLLOWER_GIDS = [
+  '1208682055693742', // markellis0404@gmail.com
+  '1208531377541012', // worship@ucfministries.org (Sandra McKinley)
+];
+
+// Envelope sender for channel B. Must be a verified sender/domain at whichever
+// provider you configured, or the send will be rejected.
+const NOTIFY_FROM = process.env.NOTIFY_FROM_EMAIL || 'Ablaze Website <noreply@ablazeyc.com>';
 
 // -----------------------------------------------------------------------------
 //  3) REQUEST TYPE REGISTRY
@@ -352,6 +392,33 @@ const INTERNAL_FIELDS = new Set([
 const ASANA_BASE = 'https://app.asana.com/api/1.0';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// ► INVOCATION TIME BUDGET
+//   Netlify hard-kills a function at 10s. Every outbound call used to carry its
+//   own independent timeout (8s create + 5s section + 5s followers + a 6.5s
+//   subtask loop + 5s mail), which sums to ~29s — so on a slow Asana day the
+//   platform could kill us mid-flight. That is the worst possible outcome: the
+//   browser sees a dead socket, runs its native fallback, and files a DUPLICATE
+//   of a booking that already has a live Asana card.
+//
+//   So the budget is now owned by the invocation, not by each call. Every call
+//   is clamped to whatever is actually left, and best-effort work is skipped
+//   once the remaining time is too small to be useful.
+const FUNCTION_BUDGET_MS = 8800;  // leaves ~1.2s to serialize + return the response
+
+// Reserve time for the notification email ONLY if a provider is actually
+// configured. With no key, notifyByEmail returns immediately, so holding back
+// 1.8s would just be time stolen from the checklist for nothing — that alone
+// was costing the Booking Request its last four subtasks.
+const MAIL_CONFIGURED   = Boolean(process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY);
+const NOTIFY_RESERVE_MS = MAIL_CONFIGURED ? 1800 : 0;
+
+let invocationDeadline = 0;       // set at the top of the handler, per request
+
+// Milliseconds left in this invocation, minus anything the caller wants reserved.
+function msLeft(reserveMs) {
+  return invocationDeadline - Date.now() - (reserveMs || 0);
+}
+
 function json(statusCode, payload, extraHeaders) {
   return {
     statusCode,
@@ -513,8 +580,13 @@ function buildDescription(requestType, f, priority) {
 //  6) ASANA API
 // -----------------------------------------------------------------------------
 async function asanaFetch(path, options, timeoutMs) {
+  // Clamp the caller's timeout to the time this invocation actually has left, so
+  // no single call can run past the platform limit. A floor of 400ms means a
+  // doomed call fails fast and cleanly instead of being killed by Netlify.
+  const want = timeoutMs || 8000;
+  const budget = invocationDeadline ? Math.max(400, Math.min(want, msLeft(0))) : want;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs || 8000);
+  const timer = setTimeout(() => controller.abort(), budget);
   try {
     const res = await fetch(`${ASANA_BASE}${path}`, {
       ...options,
@@ -546,11 +618,11 @@ async function createAsanaTask(requestType, f) {
     notes: buildDescription(requestType, f, cfg.priority),
   };
 
-  // Place the task: into its section if configured, else just the project.
+  // Place the task in the project. Asana's create-task API only accepts
+  // `projects`/`workspace`/`parent` for placement (`memberships` is rejected
+  // with a 400) — the section move happens after creation via addTask.
   const sectionId = SECTIONS[requestType];
-  if (sectionId) {
-    data.memberships = [{ project: ASANA_PROJECT_ID, section: sectionId }];
-  } else if (ASANA_PROJECT_ID) {
+  if (ASANA_PROJECT_ID) {
     data.projects = [ASANA_PROJECT_ID];
   } else if (ASANA_WORKSPACE_ID) {
     // No project configured — fall back to creating in the workspace.
@@ -587,10 +659,42 @@ async function createAsanaTask(requestType, f) {
 
   if (Object.keys(customFields).length) data.custom_fields = customFields;
 
+  // Reserve the notification budget up front. If Asana is hanging, we would
+  // rather give up on the create with time left to email a human than spend the
+  // entire invocation waiting and have the request vanish silently.
   const res = await asanaFetch('/tasks?opt_fields=permalink_url,name', {
     method: 'POST',
     body: JSON.stringify({ data }),
-  });
+  }, Math.max(2000, msLeft(NOTIFY_RESERVE_MS)));
+
+  // Best-effort section move — a failure leaves the task in the project's
+  // default section, which still counts as delivered.
+  if (sectionId && res.data && res.data.gid) {
+    try {
+      await asanaFetch(`/sections/${sectionId}/addTask`, {
+        method: 'POST',
+        body: JSON.stringify({ data: { task: res.data.gid } }),
+      }, 5000);
+    } catch (err) {
+      console.warn(`[asana-intake] section move failed (${requestType}):`, err.message);
+    }
+  }
+
+  // Notification channel A — add the standing followers so Asana emails them.
+  // Best-effort and deliberately AFTER the create: if a gid is stale the task
+  // still exists with every detail, we just lose one notification hop (channel
+  // B and the Netlify Forms notification still cover it).
+  if (NOTIFY_FOLLOWER_GIDS.length && res.data && res.data.gid) {
+    try {
+      await asanaFetch(`/tasks/${res.data.gid}/addFollowers`, {
+        method: 'POST',
+        body: JSON.stringify({ data: { followers: NOTIFY_FOLLOWER_GIDS } }),
+      }, 5000);
+    } catch (err) {
+      console.warn('[asana-intake] addFollowers failed:', err.message);
+    }
+  }
+
   return res.data; // { gid, permalink_url, name, ... }
 }
 
@@ -598,29 +702,147 @@ async function createAsanaTask(requestType, f) {
 // fails the whole request (the parent task already exists with full details).
 async function createChecklistSubtasks(parentGid, requestType) {
   const items = (REQUEST_TYPES[requestType] || {}).checklist || [];
-  const deadline = Date.now() + 6500; // keep us comfortably under the 10s budget
-  const created = [];
-  for (const item of items) {
-    if (Date.now() > deadline) {
-      console.warn(`[asana-intake] subtask budget hit; ${items.length - created.length} item(s) not created for ${parentGid}`);
+
+  // Created in WAVES, not one-at-a-time. Booking Request has 16 items and each
+  // POST costs ~700-900ms, so a serial loop needs ~14s — it could never finish
+  // inside a 10s invocation and was quietly truncating the checklist to whatever
+  // fit. Waves of SUBTASK_WAVE run concurrently (~1 round trip each), so all 16
+  // land in ~3 round trips instead of 16.
+  //
+  // Why waves rather than one big Promise.all: Asana orders subtasks by creation,
+  // and firing all 16 at once scrambles the checklist completely. Sequential waves
+  // keep the list in order at wave granularity — items 1-6, then 7-12, then 13-16 —
+  // which keeps the vetting steps readable top-to-bottom.
+  // 8 per wave means the 16-item Booking checklist needs only 2 round trips.
+  const SUBTASK_WAVE = 8;
+  const SUBTASK_TIMEOUT_MS = 2500;
+  // A wave costs up to SUBTASK_TIMEOUT_MS (calls run concurrently, so the wave
+  // is as slow as its slowest member). Only START a wave if there is room to
+  // FINISH it — checking for a token 900ms was how a wave beginning at 7.9s
+  // pushed a real submission to 9.6s, within a rounding error of the platform
+  // kill that produces duplicate cards.
+  const WAVE_HEADROOM_MS = SUBTASK_TIMEOUT_MS + 100;
+  let created = 0;
+
+  for (let i = 0; i < items.length; i += SUBTASK_WAVE) {
+    if (msLeft(NOTIFY_RESERVE_MS) < WAVE_HEADROOM_MS) {
+      console.warn(`[asana-intake] subtask budget hit; ${items.length - created} item(s) not created for ${parentGid}`);
       break;
     }
-    // Each item is a plain string (normal subtask) OR { name, approval: true },
-    // which becomes an Asana approval task (Approve / Request changes / Reject).
-    const name = typeof item === 'string' ? item : item.name;
-    const data = { name };
-    if (item && item.approval) data.resource_subtype = 'approval';
-    try {
-      await asanaFetch(`/tasks/${parentGid}/subtasks`, {
-        method: 'POST',
-        body: JSON.stringify({ data }),
-      }, 5000);
-      created.push(name);
-    } catch (err) {
-      console.warn(`[asana-intake] subtask failed (${name}):`, err.message);
-    }
+    const wave = items.slice(i, i + SUBTASK_WAVE);
+    const results = await Promise.all(
+      wave.map(async (item) => {
+        // Each item is a plain string (normal subtask) OR { name, approval: true },
+        // which becomes an Asana approval task (Approve / Request changes / Reject).
+        const name = typeof item === 'string' ? item : item.name;
+        const data = { name };
+        if (item && item.approval) data.resource_subtype = 'approval';
+        try {
+          await asanaFetch(`/tasks/${parentGid}/subtasks`, {
+            method: 'POST',
+            body: JSON.stringify({ data }),
+          }, SUBTASK_TIMEOUT_MS);
+          return true;
+        } catch (err) {
+          console.warn(`[asana-intake] subtask failed (${name}):`, err.message);
+          return false;
+        }
+      })
+    );
+    created += results.filter(Boolean).length;
   }
-  return created.length;
+  return created;
+}
+
+// -----------------------------------------------------------------------------
+//  6b) NOTIFICATION EMAIL (channel B — see the notes in section 2b)
+//      Provider-agnostic and entirely optional: with no API key configured this
+//      is a no-op, and it is ALWAYS best-effort — a mail failure must never turn
+//      a good submission into an error for the visitor.
+// -----------------------------------------------------------------------------
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Send one email to every address in NOTIFY_EMAILS. `taskUrl` is null when Asana
+// rejected the task — in that case the email doubles as the failure alert, since
+// nothing landed on the board to notify anyone about.
+async function notifyByEmail(requestType, f, taskUrl, errorMessage) {
+  const resendKey = process.env.RESEND_API_KEY;
+  const sendgridKey = process.env.SENDGRID_API_KEY;
+  if (!resendKey && !sendgridKey) return false; // channel B not configured
+
+  const priority = (REQUEST_TYPES[requestType] || {}).priority || 'Medium';
+  const title = deriveTitle(requestType, f);
+  const body = buildDescription(requestType, f, priority);
+  const subject = taskUrl
+    ? `🔥 ${title}`
+    : `⚠️ ACTION NEEDED — ${title} (not saved to Asana)`;
+
+  const footer = taskUrl
+    ? `Open in Asana: ${taskUrl}`
+    : `This submission could NOT be saved to Asana (${errorMessage || 'unknown error'}).\n` +
+      `It was captured in Netlify Forms instead — recover it there, or run the ablaze-intake-sync agent.`;
+
+  const text = `${body}\n\n— — — — — — — — — — — — — — — — — — — —\n${footer}\n`;
+  const html =
+    `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1a1a1a">` +
+    `<h2 style="margin:0 0 4px;font-size:18px">${escapeHtml(title)}</h2>` +
+    `<p style="margin:0 0 16px;color:#666;font-size:13px">Priority: ${escapeHtml(priority)} · via ablazeyc.com</p>` +
+    `<pre style="white-space:pre-wrap;font-family:inherit;margin:0 0 20px">${escapeHtml(body)}</pre>` +
+    (taskUrl
+      ? `<p><a href="${escapeHtml(taskUrl)}" style="background:#c0392b;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;display:inline-block">Open in Asana</a></p>`
+      : `<p style="background:#fff4f4;border-left:4px solid #c0392b;padding:12px">${escapeHtml(footer)}</p>`) +
+    `</div>`;
+
+  // Clamped to the invocation budget for the same reason every Asana call is:
+  // a hanging mail provider must never be what gets the function killed.
+  const mailBudget = invocationDeadline ? msLeft(300) : 5000;
+  if (mailBudget < 500) {
+    console.warn(`[asana-intake] skipped notify email — only ${mailBudget}ms left in budget`);
+    return false;
+  }
+  const withTimeout = (url, options) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), Math.min(5000, mailBudget));
+    return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+  };
+
+  try {
+    let res;
+    if (resendKey) {
+      res = await withTimeout('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: NOTIFY_FROM, to: NOTIFY_EMAILS, subject, text, html }),
+      });
+    } else {
+      res = await withTimeout('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${sendgridKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          personalizations: [{ to: NOTIFY_EMAILS.map((email) => ({ email })) }],
+          // SendGrid needs the address split out of the "Name <addr>" form.
+          from: { email: (NOTIFY_FROM.match(/<(.+)>/) || [null, NOTIFY_FROM])[1], name: 'Ablaze Website' },
+          subject,
+          content: [{ type: 'text/plain', value: text }, { type: 'text/html', value: html }],
+        }),
+      });
+    }
+    if (!res.ok) {
+      console.warn('[asana-intake] notify email rejected:', res.status, (await res.text()).slice(0, 300));
+      return false;
+    }
+    console.log(`[asana-intake] notified ${NOTIFY_EMAILS.join(', ')} (${taskUrl ? 'task created' : 'FAILURE alert'})`);
+    return true;
+  } catch (err) {
+    console.warn('[asana-intake] notify email failed:', err && err.message);
+    return false;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -644,9 +866,24 @@ function isRateLimited(ip) {
 //  8) HANDLER
 // -----------------------------------------------------------------------------
 exports.handler = async (event) => {
+  // Start the clock before anything else — every outbound call clamps to it.
+  invocationDeadline = Date.now() + FUNCTION_BUDGET_MS;
+
   if (event.httpMethod === 'OPTIONS') return json(204, {});
   // `v` is a deploy marker so a plain GET can confirm which revision is live.
-  if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Method not allowed', v: 2 });
+  if (event.httpMethod !== 'POST') {
+    return json(405, {
+      ok: false,
+      error: 'Method not allowed',
+      v: 7,
+      // Surfaced so the ablaze-intake-sync agent can check notification wiring
+      // without needing dashboard access. No secrets, just on/off.
+      notify: {
+        followers: NOTIFY_FOLLOWER_GIDS.length,
+        email: Boolean(process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY),
+      },
+    });
+  }
 
   // Parse JSON body.
   let fields;
@@ -701,6 +938,13 @@ exports.handler = async (event) => {
     } catch (subErr) {
       console.warn('[asana-intake] checklist creation issue:', subErr.message);
     }
+    // Channel B. Best-effort and awaited (the function is about to return, so a
+    // fire-and-forget promise would be killed with the invocation).
+    try {
+      await notifyByEmail(requestType, fields, task.permalink_url || null, null);
+    } catch (mailErr) {
+      console.warn('[asana-intake] notify issue:', mailErr && mailErr.message);
+    }
     console.log(`[asana-intake] created task ${task.gid} (${requestType}, ${checklistCount} checklist items)`);
     return json(200, { ok: true, delivered: true, taskUrl: task.permalink_url || null });
   } catch (err) {
@@ -722,11 +966,44 @@ exports.handler = async (event) => {
     console.error('[asana-intake] ASANA_DELIVERY_FAILED', err && err.message);
     console.error('[asana-intake] SUBMISSION_PAYLOAD ' + JSON.stringify({ requestType, fields, at: new Date().toISOString() }));
 
+    // ORDER MATTERS HERE. By the time we reach this block the Asana call has
+    // already burned most of the invocation, so whatever runs first is the only
+    // thing that reliably runs at all. Alerting a human beats diagnosing a
+    // machine: this is the ONE path where the Asana follower notification cannot
+    // fire (there is no task), and the alert names the submitter so the request
+    // can be answered by hand before anyone digs the payload out of Netlify Forms.
+    try {
+      await notifyByEmail(requestType, fields, null, err && err.message);
+    } catch (mailErr) {
+      console.warn('[asana-intake] failure-alert email issue:', mailErr && mailErr.message);
+    }
+
+    // Diagnostic: on "Unknown object" errors the token authenticates but can't
+    // see the project — log whose token this is so access can be granted. Only
+    // worth attempting if there is real time left; the alert above is what the
+    // team actually needs.
+    if (msLeft(600) > 800) {
+      try {
+        const me = await asanaFetch('/users/me?opt_fields=name,email,workspaces.name', { method: 'GET' }, 2500);
+        console.error('[asana-intake] TOKEN_IDENTITY ' + JSON.stringify(me && me.data));
+      } catch (idErr) {
+        console.error('[asana-intake] TOKEN_IDENTITY_FAILED', idErr && idErr.message);
+      }
+    } else {
+      console.error('[asana-intake] TOKEN_IDENTITY skipped — out of time budget');
+    }
+
     const hook = process.env.FALLBACK_WEBHOOK_URL;
-    if (hook) {
+    if (hook && msLeft(600) > 500) {
+      // This was the one outbound call with no timeout of its own — an
+      // unreachable webhook host could hang until the platform killed us, which
+      // would swallow the 503 the browser needs to trigger its native fallback.
+      const hookController = new AbortController();
+      const hookTimer = setTimeout(() => hookController.abort(), Math.min(2500, msLeft(600)));
       try {
         await fetch(hook, {
           method: 'POST',
+          signal: hookController.signal,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: `⚠️ Ablaze intake: Asana create failed for "${requestType}". Submission logged.`,
@@ -737,6 +1014,8 @@ exports.handler = async (event) => {
         });
       } catch (hookErr) {
         console.error('[asana-intake] fallback webhook failed:', hookErr && hookErr.message);
+      } finally {
+        clearTimeout(hookTimer);
       }
     }
 

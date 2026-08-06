@@ -121,6 +121,78 @@ Expected: `{"ok":true,"delivered":true,"taskUrl":"https://app.asana.com/..."}`.
 
 ---
 
+## 4b. Notifications — who hears about a new request
+
+Every website request is announced over three independent channels. They overlap
+on purpose: each one covers a failure the others cannot.
+
+**Who gets what:**
+
+| Form | markellis0404@ | worship@ucfministries.org | miracleucfm@ |
+|------|:---:|:---:|:---:|
+| booking | ✅ | ✅ | ✅ |
+| contact | ✅ | ✅ | ✅ |
+| press | ✅ | ✅ | ✅ |
+| sponsor | ✅ | ✅ | ✅ |
+| scholarship | — | — | ✅ |
+
+`miracleucfm@gmail.com` (site owner) receives **all five** forms. The scholarship
+form goes to the owner only — it contains minors' PII, so it is not fanned out to
+the wider team, and it is not routed into Asana at all. Every hook is explicitly
+scoped to one form id; there is no unscoped "any form" hook, because its scoping
+semantics are ambiguous in the API and this pipeline has already lost requests to
+silent behavior once.
+
+| # | Channel | Configured where | Fires when | Needs a secret? |
+|---|---------|------------------|-----------|-----------------|
+| 1 | **Asana followers** | `NOTIFY_FOLLOWER_GIDS` in `submit-form.js` | A task is created — Asana emails its followers the card | No |
+| 2 | **Netlify Forms notifications** | Netlify → Site settings → Forms → Notifications | A submission lands in Netlify Forms (the native fallback) | No |
+| 3 | **Direct transactional email** | `RESEND_API_KEY` *or* `SENDGRID_API_KEY` | Every submission, **including ones Asana rejected** | Yes (optional) |
+
+Why all three:
+
+- Channel 1 is the everyday path, but it cannot fire when Asana itself is the
+  thing that failed — there is no task to follow.
+- Channel 2 is the one that would have caught the **2026-07-20 and 2026-07-21
+  misses**, where the visitor's browser never reached the function at all and
+  the submission sat unread in Netlify Forms. See the recipient table above for
+  exactly which inbox gets which form.
+- Channel 3 is off until a provider key is set. It is the only channel that
+  emails a human on the Asana-rejected path, and it names the submitter so the
+  request can be answered before anyone digs the payload out of Netlify Forms.
+
+Check what is live without dashboard access — a GET on the endpoint reports it:
+
+```bash
+curl -s https://ablazeyc.com/.netlify/functions/submit-form
+# {"ok":false,"error":"Method not allowed","v":6,"notify":{"followers":2,"email":false}}
+```
+
+`email:false` just means channel 3 has no provider key — channels 1 and 2 are
+still running.
+
+### Turning on channel 3
+
+1. Create a Resend account and verify the `ablazeyc.com` domain.
+2. `netlify env:set RESEND_API_KEY "re_…"` (or set it in the dashboard).
+3. Redeploy. Confirm `notify.email` is now `true`.
+
+### Reconciling misses — the `ablaze-intake-sync` agent
+
+`.claude/agents/ablaze-intake-sync.md` is a subagent that sweeps Netlify Forms
+for submissions that never reached the board, cross-checks Asana to avoid
+duplicates, and recreates the missing cards in 📥 New in the function's own
+format (title, notes, priority, checklist subtasks, both notify followers). Run
+it any time, or on a schedule:
+
+```
+Use the ablaze-intake-sync agent to check for missed website requests
+```
+
+It never deletes, never re-triages, and never touches the scholarship form.
+
+---
+
 ## 5. Spam protection
 
 - **Honeypot** `bot-field` on every form — filled = silently dropped.
@@ -137,8 +209,16 @@ Expected: `{"ok":true,"delivered":true,"taskUrl":"https://app.asana.com/..."}`.
   store (e.g. Upstash Redis).
 - **No‑loss, not real‑time delivery guarantee.** If Asana is down, the visitor still sees success and the
   submission is logged (and webhooked if configured) for manual recovery — it is not auto‑retried.
-- **Checklist = subtasks.** Created best‑effort after the task; if Asana throttles mid‑way, the parent
-  task still exists with the full description and the shortfall is logged.
+- **Checklist = subtasks, created in concurrent waves.** Netlify kills a function at 10s, and 16 serial
+  subtask POSTs need ~14s — so the Booking checklist used to truncate silently. Subtasks now go out in
+  waves of 8, and the whole invocation shares one time budget (`FUNCTION_BUDGET_MS`) that every outbound
+  call clamps to. Measured: the full 16‑item Booking checklist completes in ~5–6.5s. If a wave still
+  can't fit, it is skipped and logged (`subtask budget hit; N item(s) not created`) — the parent task
+  always exists with the full description.
+- **Why the budget matters more than it looks.** If the function is killed mid‑flight, the browser sees a
+  dead socket and runs its native fallback, which files a *duplicate* of a booking that already has a live
+  Asana card. Overshooting the limit is worse than dropping a checklist item, which is why waves only start
+  when there is room to finish them.
 - **Netlify Forms fallback** only applies to the `data-netlify` forms (booking/contact/press/sponsor).
   The compact email signups degrade to their previous "Sent ✓" behavior if the function is unreachable.
 - **Free Netlify Forms tier is 100 submissions/month** — only *fallback* submissions count against it
