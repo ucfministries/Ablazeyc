@@ -202,10 +202,141 @@
       if (reduceMotion || saveData) {
         hv.removeAttribute('autoplay');
         hv.pause();
+        // Actually stop the multi-MB download, not just playback — drop the
+        // sources and reset so only the poster remains.
+        Array.prototype.forEach.call(hv.querySelectorAll('source'), function (s) { s.remove(); });
+        hv.removeAttribute('src');
+        hv.load();
       } else {
-        var pv = hv.play();
-        if (pv && pv.catch) { pv.catch(function () {}); }
+        var kickVideo = function () {
+          if (!hv.paused) return;
+          var pv = hv.play();
+          if (pv && pv.catch) { pv.catch(function () {}); }
+        };
+        kickVideo();
+        hv.addEventListener('canplay', kickVideo);
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) kickVideo(); });
       }
+    }
+
+    // HERO SEQUENCE — cross-fade the performance clip and the original hero
+    // stills on an endless loop. The video layer holds for one full pass of the
+    // clip (not a hard-cut restart), each still holds for its data-hold ms.
+    // Skipped entirely for reduced-motion / Data Saver: layer 1 just stays up,
+    // which is the pre-sequence hero.
+    var heroLayers = document.querySelectorAll('.hero-bg [data-hero-layer]');
+    if (heroLayers.length > 1 && hv && !reduceMotion && !(navigator.connection && navigator.connection.saveData)) {
+      var li = 0, heroTimer = null;
+      var VIDEO_FALLBACK_MS = 14000;
+
+      var holdFor = function (layer) {
+        var h = layer.getAttribute('data-hold');
+        if (h !== 'video') return parseInt(h, 10) || 7000;
+        // One full pass of the clip, minus the fade so the cut lands clean.
+        var dur = hv.duration && isFinite(hv.duration) ? hv.duration * 1000 : VIDEO_FALLBACK_MS;
+        return Math.max(4000, dur - 1300);
+      };
+
+      var ready = function (layer) {
+        var img = layer.querySelector('img');
+        return !img || (img.complete && img.naturalWidth > 0);
+      };
+
+      var showLayer = function (i) {
+        // Never fade to a still that has not decoded yet: skip ahead, and fall
+        // back to the video layer rather than show an empty hero.
+        var guard = 0;
+        while (!ready(heroLayers[i]) && guard++ < heroLayers.length) {
+          i = (i + 1) % heroLayers.length;
+        }
+        if (!ready(heroLayers[i])) i = 0;
+        li = i;
+        heroLayers.forEach(function (l, n) { l.classList.toggle('is-active', n === i); });
+        var layer = heroLayers[i];
+        var isVideo = layer.getAttribute('data-hold') === 'video';
+        // Only run the clip while it is the layer on screen.
+        if (isVideo) { hv.currentTime = 0; kickVideo(); } else { hv.pause(); }
+        // Restart the drift on whichever still just came up.
+        var img = layer.querySelector('img');
+        if (img) { img.style.animation = 'none'; void img.offsetWidth; img.style.animation = ''; }
+        clearTimeout(heroTimer);
+        heroTimer = setTimeout(function () { showLayer((li + 1) % heroLayers.length); }, holdFor(layer));
+      };
+
+      // Start the clock once the clip's real duration is known.
+      var startSequence = function () { showLayer(0); };
+      if (hv.readyState >= 1) startSequence();
+      else hv.addEventListener('loadedmetadata', startSequence, { once: true });
+      // A hidden tab freezes timers; resync rather than resume mid-fade.
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { clearTimeout(heroTimer); } else { showLayer(li); }
+      });
+    }
+
+    // NAV — scrolled state (denser, darker chrome once content moves)
+    var navEl = document.querySelector('.nav');
+    if (navEl) {
+      var navState = function () { navEl.classList.toggle('scrolled', window.scrollY > 40); };
+      window.addEventListener('scroll', navState, { passive: true });
+      navState();
+    }
+
+    // STAT COUNT-UP — proof-band numbers count in once when they enter view
+    var proofNums = document.querySelectorAll('.proof .num');
+    if (proofNums.length && !reduceMotion && 'IntersectionObserver' in window) {
+      var countIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          countIo.unobserve(en.target);
+          var m = (en.target.textContent || '').trim().match(/^(\d+(?:\.\d+)?)(.*)$/);
+          if (!m) return;
+          var end = parseFloat(m[1]), suffix = m[2], t0 = null;
+          var tick = function (ts) {
+            if (!t0) t0 = ts;
+            var p = Math.min((ts - t0) / 1100, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            en.target.textContent = Math.round(end * eased) + suffix;
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }, { threshold: 0.4 });
+      proofNums.forEach(function (n) { countIo.observe(n); });
+    }
+
+    // YOUTUBE FACADE — click-to-load embed. The page stays light (no YouTube
+    // JS/cookies) until a visitor actually presses play.
+    document.querySelectorAll('.yt-facade[data-yt-embed]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var wrap = btn.closest('.yt-player') || btn.parentNode;
+        var path = btn.getAttribute('data-yt-embed');
+        var f = document.createElement('iframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + path + (path.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&playsinline=1&rel=0';
+        f.title = btn.getAttribute('aria-label') || 'YouTube video player';
+        f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        f.setAttribute('allowfullscreen', '');
+        f.setAttribute('tabindex', '-1');
+        wrap.appendChild(f);
+        f.focus();
+        btn.remove();
+      });
+    });
+
+    // OPENER — the homepage flame intro. The <head> gate decides whether it runs
+    // and drops the scroll lock on a timer by itself; this only wires the ways out.
+    var opener = document.getElementById('opener');
+    if (opener) {
+      var openerClosing = false;
+      var closeOpener = function () {
+        if (openerClosing || !document.documentElement.classList.contains('opener-on')) return;
+        openerClosing = true;
+        opener.classList.add('is-closing');
+        setTimeout(function () { document.documentElement.classList.remove('opener-on'); }, 260);
+      };
+      var openerSkip = document.getElementById('openerSkip');
+      if (openerSkip) openerSkip.addEventListener('click', closeOpener);
+      opener.addEventListener('click', closeOpener);
+      document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeOpener(); });
     }
 
     // REVEAL ON SCROLL (with graceful fallbacks)
@@ -254,6 +385,40 @@
     // ------------------------------------------------------------------
     var ASANA_ENDPOINT = '/.netlify/functions/submit-form';
 
+    // ------------------------------------------------------------------
+    // "WRONG FORM" REDIRECT
+    // The contact form's Inquiry Type dropdown offers categories that have a
+    // dedicated form elsewhere on the site. Those forms collect required fields
+    // the contact form has no equivalent for — a booking with no date, venue or
+    // audience size can't be answered, only chased — so picking one of these on
+    // the contact form sends the visitor to next-step.html instead of the normal
+    // thank-you page, where they're asked to fill the real form.
+    //
+    // The submission is still delivered either way (Asana card + notifications);
+    // this only changes where the visitor lands. Never drop a lead over a
+    // routing mistake.
+    //
+    // Keys must match contact.html's <option> text EXACTLY. Options with no
+    // dedicated form of their own — Merch, Testimony, Director, Fan Mail, Other
+    // — are deliberately absent: the contact form IS their intake, so they go to
+    // thank-you.html as before.
+    // ⚠️ Mirrored server-side in netlify/functions/submit-form.js → REDIRECT_FORMS
+    // (which sends the matching auto-reply email). Change both together.
+    var REDIRECTS = {
+      'Booking':                   'booking',
+      'Press / Media':             'press',
+      'Sponsorship / Partnership': 'sponsor',
+      'Scholarship':               'scholarship',
+    };
+
+    // Returns the next-step URL for a submission, or '' to use the form's normal
+    // action. Contact form only — the dedicated forms are already the right form.
+    function redirectFor(formName, data) {
+      if (formName !== 'contact') return '';
+      var variant = REDIRECTS[(data.inquiry || '').trim()];
+      return variant ? 'next-step.html?to=' + variant : '';
+    }
+
     function formStatusEl(f) {
       if (!f._statusEl) {
         var s = document.createElement('div');
@@ -299,6 +464,10 @@
     function wireForm(f) {
       var name = f.getAttribute('name') || 'fan-signup';
       var isNetlify = f.hasAttribute('data-netlify');
+      // Captured once so a redirect on one submit can be undone on the next —
+      // a visitor who picks "Booking", sees a validation error, then switches to
+      // "Fan Mail" must land on thank-you.html, not the stale booking redirect.
+      var defaultAction = f.getAttribute('action');
 
       // Scholarship application: leave the existing Netlify Forms flow alone.
       if (name === 'scholarship') {
@@ -320,6 +489,21 @@
         data.submitted_at = new Date().toISOString();
         try { Object.keys(UTMS).forEach(function (k) { if (!data[k]) data[k] = UTMS[k]; }); } catch (e) {}
 
+        // Point the form at next-step.html when the visitor picked an inquiry
+        // type that has its own form. Setting the ACTION rather than calling
+        // window.location directly is what makes this survive the failure paths:
+        // succeed() and nativeFallback() both read the action, so the visitor
+        // gets the same redirect whether the function answered, 503'd, or the
+        // network dropped entirely. thank-you.html gets ?from=<form> so it can
+        // greet a booking lead differently from a fan signup.
+        if (defaultAction) {
+          var action = redirectFor(name, data) || defaultAction;
+          if (action.indexOf('thank-you') > -1 && action.indexOf('from=') === -1) {
+            action += (action.indexOf('?') > -1 ? '&' : '?') + 'from=' + encodeURIComponent(name);
+          }
+          f.setAttribute('action', action);
+        }
+
         fireFormAnalytics(name);
 
         var restore = function () { if (btn) { btn.disabled = false; btn.innerHTML = orig; } };
@@ -332,8 +516,18 @@
           }
         };
         var nativeFallback = function () {
-          if (isNetlify) f.submit();  // durable: native Netlify Forms capture
-          else succeed();             // mini signup: behave like before (never worse)
+          if (isNetlify) {
+            f.submit();  // durable: native Netlify Forms capture
+            return;
+          }
+          // Mini email signups (index/merch/society) are NOT registered Netlify
+          // forms, so there is nothing to fall back TO — no durable row, no
+          // submission_created hook, no notification. This used to call succeed()
+          // and show "Sent ✓" anyway, which meant a failed signup looked
+          // identical to a successful one and the address was gone for good.
+          // Tell the truth instead so the visitor can retry.
+          restore();
+          showStatus(f, 'error', 'That didn’t send — please try again, or email ablazeyouthchoir@ucfministries.org.');
         };
 
         fetch(ASANA_ENDPOINT, {
@@ -365,15 +559,83 @@
       wireForm(f);
     });
 
-    // MOBILE STICKY CTA BAR (injected once, mobile-only via CSS)
+    // BOOKING FORM — 3 staged steps, tier deep-link preselect, lead-time floor
+    var bookForm = document.querySelector('form[name="booking"].form--staged');
+    if (bookForm) {
+      var steps = Array.prototype.slice.call(bookForm.querySelectorAll('.fstep'));
+      var railItems = Array.prototype.slice.call(bookForm.querySelectorAll('.form-steps .fs'));
+      var curStep = 0;
+      var setStep = function (i, focusFirst) {
+        curStep = Math.max(0, Math.min(steps.length - 1, i));
+        steps.forEach(function (s, si) { s.classList.toggle('active', si === curStep); });
+        railItems.forEach(function (r, ri) {
+          r.classList.toggle('active', ri === curStep);
+          r.classList.toggle('done', ri < curStep);
+        });
+        if (focusFirst) {
+          var first = steps[curStep].querySelector('input:not([type=hidden]), select, textarea');
+          if (first) first.focus();
+        }
+      };
+      var stepValid = function () {
+        var fields = steps[curStep].querySelectorAll('input, select, textarea');
+        for (var fi = 0; fi < fields.length; fi++) {
+          if (!fields[fi].checkValidity()) { fields[fi].reportValidity(); return false; }
+        }
+        return true;
+      };
+      bookForm.querySelectorAll('.btn-next').forEach(function (b) {
+        b.addEventListener('click', function () { if (stepValid()) setStep(curStep + 1, true); });
+      });
+      bookForm.querySelectorAll('.btn-back').forEach(function (b) {
+        b.addEventListener('click', function () { setStep(curStep - 1, true); });
+      });
+      // If submit finds an invalid field on a hidden step, jump to that step.
+      bookForm.addEventListener('invalid', function (ev) {
+        var s = ev.target.closest && ev.target.closest('.fstep');
+        if (s && steps.indexOf(s) !== curStep) setStep(steps.indexOf(s), false);
+      }, true);
+      setStep(0, false);
+
+      // Tier preselect: ?tier=worship|full|national|custom in the URL, or any
+      // on-page element carrying data-tier (the tier cards' CTAs).
+      var tierSel = bookForm.querySelector('select[name="tier"]');
+      var TIER_PREFIX = { worship: 'Worship Set', full: 'Full Experience', national: 'National', custom: 'Custom' };
+      var applyTier = function (key) {
+        if (!tierSel || !key || !TIER_PREFIX[key]) return;
+        for (var oi = 0; oi < tierSel.options.length; oi++) {
+          if (tierSel.options[oi].text.indexOf(TIER_PREFIX[key]) === 0) { tierSel.selectedIndex = oi; break; }
+        }
+      };
+      try { applyTier(new URLSearchParams(window.location.search).get('tier')); } catch (err) {}
+      document.querySelectorAll('[data-tier]').forEach(function (el) {
+        el.addEventListener('click', function () { applyTier(el.getAttribute('data-tier')); });
+      });
+
+      // We book 60+ days out; the date pickers should not offer sooner.
+      var minDate = function (days) {
+        var d = new Date(); d.setDate(d.getDate() + days);
+        return d.toISOString().split('T')[0];
+      };
+      var evDate = bookForm.querySelector('input[name="event_date"]');
+      var bkDate = bookForm.querySelector('input[name="backup_date"]');
+      if (evDate) evDate.min = minDate(60);
+      if (bkDate) bkDate.min = minDate(60);
+    }
+
+    // MOBILE STICKY CTA BAR (injected once, mobile-only via CSS).
+    // On the booking page the bar becomes a single Start Inquiry action —
+    // linking a visitor to the page they are already on helps nobody.
     if (!document.querySelector('.sticky-cta')) {
       var bar = document.createElement('nav');
       bar.className = 'sticky-cta';
       bar.setAttribute('aria-label', 'Quick actions');
-      bar.innerHTML =
-        '<a class="s-listen" href="music.html" data-track="listen_now_click" aria-label="Listen to Ablaze"><svg aria-hidden="true"><use href="assets/icons/icons.svg#play"></use></svg>Listen</a>' +
-        '<a class="s-shop" href="merch.html" data-track="shop_merch_click" aria-label="Shop Ablaze merch">Shop</a>' +
-        '<a class="s-book" href="booking.html" data-track="book_ablaze_click" aria-label="Book Ablaze">Book Ablaze</a>';
+      var onBooking = /^booking/.test(window.location.pathname.split('/').pop() || '');
+      bar.innerHTML = onBooking
+        ? '<a class="s-book" href="#inquire" data-track="book_ablaze_click" aria-label="Start a booking inquiry">Start Inquiry</a>'
+        : '<a class="s-listen" href="music.html" data-track="listen_now_click" aria-label="Listen to Ablaze"><svg aria-hidden="true"><use href="assets/icons/icons.svg#play"></use></svg>Listen</a>' +
+          '<a class="s-shop" href="merch.html" data-track="shop_merch_click" aria-label="Shop Ablaze merch">Shop</a>' +
+          '<a class="s-book" href="booking.html" data-track="book_ablaze_click" aria-label="Book Ablaze">Book Ablaze</a>';
       body.appendChild(bar);
       body.classList.add('has-sticky-cta');
       var toggleBar = function () {

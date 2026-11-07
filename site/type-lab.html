@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ablaze Type Lab — before / after</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:ital,wght@0,300..900;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Ablaze';src:url('assets/font/AblazeFont.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+
+:root{
+  --bg:#0a0a0a; --bg-2:#121212; --bg-3:#070504;
+  --ink:#f5f1ea; --ink-soft:#cfc7bb; --muted:#9b9389;
+  --fire-1:#ff3d00; --fire-2:#ff7a18; --fire-3:#ffb400;
+  --gold:#e8c66b; --crimson:#a8160b;
+  --line:rgba(245,241,234,.12); --cream:#f5f1ea;
+
+  /* PROPOSED SCALE TOKENS */
+  --t-label: clamp(11px,.75rem,13px);
+  --t-body:  clamp(15px,1.05vw,17px);
+  --t-lead:  clamp(17px,1.35vw,21px);
+  --t-h4:    clamp(19px,1.6vw,24px);
+  --t-h3:    clamp(24px,2.4vw,34px);
+  --t-h2:    clamp(44px,6.5vw,104px);
+  --t-h1:    clamp(60px,11vw,190px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+
+/* ---------- LAB CHROME (not part of the site) ---------- */
+.lab-top{position:sticky;top:0;z-index:50;background:rgba(7,5,4,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.lab-top b{font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.02em;font-size:20px}
+.lab-top span{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;font-family:'Bebas Neue',sans-serif}
+.lab-wrap{max-width:1400px;margin:0 auto;padding:0 28px}
+.lab-sec{padding:64px 0;border-bottom:1px solid var(--line)}
+.lab-h{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.lab-n{font-family:'Anton',sans-serif;font-size:15px;color:#0a0a0a;background:var(--fire-3);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
+.lab-h h3{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+.lab-note{font-size:14px;line-height:1.6;color:var(--muted);max-width:760px;margin-bottom:34px}
+.lab-note code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--fire-3);background:rgba(255,180,0,.08);padding:1px 6px;border-radius:4px}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ab.three{grid-template-columns:repeat(3,1fr)}
+.ab.one{grid-template-columns:1fr}
+@media(max-width:1000px){.ab,.ab.three{grid-template-columns:1fr}}
+.pane{padding:38px 32px;position:relative;min-width:0}
+.pane + .pane{border-left:1px solid var(--line)}
+@media(max-width:1000px){.pane + .pane{border-left:none;border-top:1px solid var(--line)}}
+.pane.cream{background:var(--cream);color:#1a1512}
+.tag{position:absolute;top:0;left:0;font-family:'Bebas Neue',sans-serif;letter-spacing:.2em;font-size:11px;padding:6px 14px;border-bottom-right-radius:10px}
+.tag.now{background:#2a2320;color:#b8ada1}
+.tag.new{background:var(--fire-1);color:#fff}
+.tag.alt{background:var(--fire-3);color:#0a0a0a}
+.pane > *:first-child + *{margin-top:26px}
+.spec{margin-top:22px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.7;color:var(--muted);border-top:1px dashed rgba(245,241,234,.16);padding-top:14px;white-space:pre-wrap}
+.pane.cream .spec{color:#7a6f63;border-top-color:rgba(0,0,0,.16)}
+
+/* ============================================================
+   "NOW" = verbatim current styles.css values
+   ============================================================ */
+.now-eyebrow{font-family:'Bebas Neue',sans-serif;letter-spacing:.32em;font-size:13px;color:var(--fire-2);text-transform:uppercase}
+.now-h2{font-family:'Anton',sans-serif;font-size:clamp(46px,4.4vw,110px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;margin-top:14px}
+.now-h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;color:var(--fire-2);text-transform:none;font-size:.85em}
+.now-lede{margin-top:18px;font-size:17px;line-height:1.6;color:var(--ink-soft);max-width:620px;font-weight:300}
+.now-card-h{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.02em;text-transform:uppercase;margin-bottom:10px}
+.now-card-p{font-size:14px;line-height:1.6;color:#5a4f44}
+.now-h1{font-family:'Anton',sans-serif;font-size:clamp(64px,7.2vw,200px);line-height:.85;letter-spacing:-.02em;text-transform:uppercase;color:var(--ink)}
+.now-th{font-family:'Anton',sans-serif;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.now-vmeta{font-family:'Anton',sans-serif;font-size:18px;line-height:1.1;text-transform:uppercase;color:#fff}
+.now-price{font-family:'Playfair Display',serif;font-size:19px;color:var(--fire-3)}
+.now-aworg{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--fire-3)}
+
+/* ============================================================
+   "NEW" = proposed
+   ============================================================ */
+.new-eyebrow{font-family:'Bebas Neue',sans-serif;letter-spacing:.28em;font-size:var(--t-label);color:var(--fire-2);text-transform:uppercase}
+.new-h2{font-family:'Anton',sans-serif;font-size:clamp(44px,4.2vw,104px);line-height:.94;letter-spacing:-.022em;text-transform:uppercase;margin-top:16px;text-wrap:balance}
+.new-h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;color:var(--fire-2);text-transform:none;font-size:.85em}
+.new-lede{margin-top:20px;font-size:var(--t-lead);line-height:1.58;color:var(--ink-soft);max-width:600px;font-weight:400;text-wrap:pretty}
+.new-h1{font-family:'Anton',sans-serif;font-size:clamp(60px,7vw,190px);line-height:.84;letter-spacing:-.032em;text-transform:uppercase;color:var(--ink);text-wrap:balance}
+.fire-word{background:linear-gradient(180deg,var(--fire-3) 0%,var(--fire-1) 60%,var(--crimson) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;text-shadow:0 0 60px rgba(255,122,24,.35);font-family:'Ablaze','Anton',sans-serif;letter-spacing:.01em}
+
+/* card-title options */
+.opt-a-h{font-family:'Inter',sans-serif;font-weight:800;font-size:var(--t-h4);letter-spacing:-.015em;line-height:1.15;margin-bottom:10px}
+.opt-b-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.07em;text-transform:uppercase;line-height:1.05;margin-bottom:10px}
+.opt-c-h{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.065em;text-transform:uppercase;margin-bottom:10px}
+.new-card-p{font-size:var(--t-body);line-height:1.62;color:#5a4f44;text-wrap:pretty}
+
+/* pillar shells */
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pillar{padding:28px 24px;border:1px solid rgba(0,0,0,.12);border-radius:14px;background:#fff}
+.pillar .ico{font-family:'Anton',sans-serif;font-size:34px;color:var(--fire-1);line-height:1;margin-bottom:14px}
+
+/* small-tier demo */
+.tierdemo{display:flex;flex-direction:column;gap:20px}
+.tierrow{display:flex;align-items:baseline;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.tierrow .what{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);width:132px;flex:none}
+.new-tier-label{font-family:'Bebas Neue',sans-serif;letter-spacing:.26em;font-size:12px;color:var(--fire-2);text-transform:uppercase}
+.new-tier-title{font-family:'Inter',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.012em}
+.new-tier-th{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+
+/* scale ladder */
+.ladder{display:flex;flex-direction:column;gap:4px}
+.rung{display:flex;align-items:baseline;gap:20px;padding:10px 0;border-bottom:1px solid rgba(245,241,234,.07)}
+.rung .k{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--fire-3);width:104px;flex:none}
+.rung .v{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);width:190px;flex:none}
+.rung .s{font-family:'Anton',sans-serif;text-transform:uppercase;line-height:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* em rationing demo */
+.ration{display:flex;flex-direction:column;gap:30px}
+.ration .r{border-left:2px solid rgba(245,241,234,.14);padding-left:20px}
+.ration .r.hit{border-left-color:var(--fire-1)}
+.mini-h2{font-family:'Anton',sans-serif;font-size:30px;line-height:.96;text-transform:uppercase;letter-spacing:-.012em}
+.mini-h2 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;color:var(--fire-2);text-transform:none;font-size:.86em}
+.mini-eye{font-family:'Bebas Neue',sans-serif;letter-spacing:.26em;font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+
+/* serif swap */
+.serif-now{font-family:'Playfair Display',serif;font-style:italic;font-weight:400}
+.serif-new{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-variation-settings:'opsz' 20}
+.serif-row{display:flex;flex-direction:column;gap:16px}
+.serif-row div{color:var(--fire-3)}
+</style>
+</head>
+<body>
+
+<div class="lab-top">
+  <b>Ablaze Type Lab</b>
+  <span>Left = live site today · Right = proposed</span>
+  <span style="color:var(--fire-3)">not linked from the site · delete before deploy</span>
+</div>
+
+<div class="lab-wrap">
+
+<!-- 1. CARD TITLE TIER -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">1</span><h3>The card-title tier</h3></div>
+  <p class="lab-note">The big one. Anton at <code>22px</code> uppercase is where it stops reading as words. Three ways out, all using the real "Ministry / Music / Culture / Community" pillars. Body copy also goes <code>14px → 16px</code> in every proposed pane.</p>
+  <div class="ab three">
+    <div class="pane cream"><span class="tag now">Now · Anton 22px</span>
+      <div class="pillars" style="grid-template-columns:1fr">
+        <div class="pillar"><div class="ico">◈</div><h4 class="now-card-h">Ministry</h4><p class="now-card-p">Worship, discipleship, and youth engagement rooted in real faith.</p></div>
+        <div class="pillar"><div class="ico">◈</div><h4 class="now-card-h">Culture</h4><p class="now-card-p">Digital-native presence with viral momentum across TikTok, Reels, and Shorts.</p></div>
+      </div>
+      <div class="spec">font-family:'Anton'
+font-size:22px
+letter-spacing:.02em
+text-transform:uppercase
+body: 14px</div>
+    </div>
+    <div class="pane cream"><span class="tag new">A · Inter 800</span>
+      <div class="pillars" style="grid-template-columns:1fr">
+        <div class="pillar"><div class="ico">◈</div><h4 class="opt-a-h">Ministry</h4><p class="new-card-p">Worship, discipleship, and youth engagement rooted in real faith.</p></div>
+        <div class="pillar"><div class="ico">◈</div><h4 class="opt-a-h">Culture</h4><p class="new-card-p">Digital-native presence with viral momentum across TikTok, Reels, and Shorts.</p></div>
+      </div>
+      <div class="spec">font-family:'Inter'
+font-weight:800
+font-size:var(--t-h4)
+letter-spacing:-.015em
+sentence case
+body: 16px</div>
+    </div>
+    <div class="pane cream"><span class="tag alt">B · Bebas 26px</span>
+      <div class="pillars" style="grid-template-columns:1fr">
+        <div class="pillar"><div class="ico">◈</div><h4 class="opt-b-h">Ministry</h4><p class="new-card-p">Worship, discipleship, and youth engagement rooted in real faith.</p></div>
+        <div class="pillar"><div class="ico">◈</div><h4 class="opt-b-h">Culture</h4><p class="new-card-p">Digital-native presence with viral momentum across TikTok, Reels, and Shorts.</p></div>
+      </div>
+      <div class="spec">font-family:'Bebas Neue'
+font-size:26px
+letter-spacing:.07em
+text-transform:uppercase
+body: 16px</div>
+    </div>
+  </div>
+
+  <p class="lab-note" style="margin-top:30px">And option C, the minimal-change version: keep Anton, just let it breathe.</p>
+  <div class="ab">
+    <div class="pane cream"><span class="tag now">Now · .02em</span>
+      <h4 class="now-card-h" style="margin-top:26px">Travel &amp; Outreach</h4>
+      <p class="now-card-p">Reaching communities that can't afford to host a full Ablaze experience.</p>
+      <h4 class="now-card-h" style="margin-top:22px">Music &amp; Media</h4>
+      <p class="now-card-p">Studio time, production, and the content engine behind the viral moments.</p>
+    </div>
+    <div class="pane cream"><span class="tag alt">C · Anton .065em</span>
+      <h4 class="opt-c-h" style="margin-top:26px">Travel &amp; Outreach</h4>
+      <p class="new-card-p">Reaching communities that can't afford to host a full Ablaze experience.</p>
+      <h4 class="opt-c-h" style="margin-top:22px">Music &amp; Media</h4>
+      <p class="new-card-p">Studio time, production, and the content engine behind the viral moments.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. SECTION HEAD -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">2</span><h3>Section heads</h3></div>
+  <p class="lab-note">Tighter tracking on the big Anton (it's set at <code>-.01em</code> across a 46→110px range, which is loose at the top end), lede weight <code>300 → 400</code> so it stops thinning out on black, and <code>text-wrap:balance</code>.</p>
+  <div class="ab">
+    <div class="pane"><span class="tag now">Now</span>
+      <div class="now-eyebrow">Booking</div>
+      <h2 class="now-h2">Bring the fire<br><em>to your stage.</em></h2>
+      <p class="now-lede">Conferences, festivals, youth nights, churches, and special services. Ablaze travels nationally.</p>
+      <div class="spec">h2 letter-spacing:-.01em
+lede 17px / weight 300
+eyebrow .32em</div>
+    </div>
+    <div class="pane"><span class="tag new">Proposed</span>
+      <div class="new-eyebrow">Booking</div>
+      <h2 class="new-h2">Bring the fire<br><em>to your stage.</em></h2>
+      <p class="new-lede">Conferences, festivals, youth nights, churches, and special services. Ablaze travels nationally.</p>
+      <div class="spec">h2 letter-spacing:-.022em
+lede var(--t-lead) / weight 400
+eyebrow .28em
+text-wrap:balance + pretty</div>
+    </div>
+  </div>
+  <div class="ab" style="margin-top:20px">
+    <div class="pane"><span class="tag now">Now</span>
+      <div class="now-eyebrow">The Movement</div>
+      <h2 class="now-h2">More than<br><em>a choir.</em></h2>
+      <p class="now-lede">Emerging from United Christian Faith Ministries in Baton Rouge, Louisiana, Ablaze is a youth-driven worship movement, content engine, and cultural brand bridging the gap between traditional gospel and the generation rising right now.</p>
+    </div>
+    <div class="pane"><span class="tag new">Proposed</span>
+      <div class="new-eyebrow">The Movement</div>
+      <h2 class="new-h2">More than<br><em>a choir.</em></h2>
+      <p class="new-lede">Emerging from United Christian Faith Ministries in Baton Rouge, Louisiana, Ablaze is a youth-driven worship movement, content engine, and cultural brand bridging the gap between traditional gospel and the generation rising right now.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. HERO -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">3</span><h3>Hero</h3></div>
+  <p class="lab-note">Anton wants to be tighter as it gets bigger. At 190px, <code>-.02em</code> still leaves gaps; <code>-.032em</code> locks the wall of type together. Everything else is untouched.</p>
+  <div class="ab one">
+    <div class="pane"><span class="tag now">Now · -.02em</span>
+      <div class="now-eyebrow" style="letter-spacing:.32em;color:var(--fire-3)">2026 Stellar Award Winner · New Artist of the Year</div>
+      <h1 class="now-h1" style="margin-top:18px">A Generation on <span class="fire-word">Fire.</span></h1>
+    </div>
+  </div>
+  <div class="ab one" style="margin-top:20px">
+    <div class="pane"><span class="tag new">Proposed · -.032em</span>
+      <div class="new-eyebrow" style="color:var(--fire-3)">2026 Stellar Award Winner · New Artist of the Year</div>
+      <h1 class="new-h1" style="margin-top:18px">A Generation on <span class="fire-word">Fire.</span></h1>
+    </div>
+  </div>
+</section>
+
+<!-- 4. SMALL TIER -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">4</span><h3>The small-text pileup</h3></div>
+  <p class="lab-note">Right now Anton and Bebas both work below 20px and are hard to tell apart, so there is really only one tier down here doing three jobs. Proposed splits them: Bebas owns labels, Inter owns titles, Anton leaves entirely.</p>
+  <div class="ab">
+    <div class="pane"><span class="tag now">Now · all condensed caps</span>
+      <div class="tierdemo" style="margin-top:26px">
+        <div class="tierrow"><span class="what">.eyebrow 13px</span><span class="now-eyebrow">Singles &amp; Releases</span></div>
+        <div class="tierrow"><span class="what">.matrix th 14px</span><span class="now-th">Deliverables</span></div>
+        <div class="tierrow"><span class="what">.vmeta h5 18px</span><span class="now-vmeta">No Weapon (Live)</span></div>
+        <div class="tierrow"><span class="what">.product h3 21px</span><span class="now-card-h" style="color:#fff;margin:0">Ablaze Fire Tee</span></div>
+      </div>
+      <div class="spec">3 of 4 are Anton or Bebas
+condensed uppercase.
+No tier separation.</div>
+    </div>
+    <div class="pane"><span class="tag new">Proposed · 3 real tiers</span>
+      <div class="tierdemo" style="margin-top:26px">
+        <div class="tierrow"><span class="what">label · Bebas</span><span class="new-tier-label">Singles &amp; Releases</span></div>
+        <div class="tierrow"><span class="what">th · Inter 700</span><span class="new-tier-th">Deliverables</span></div>
+        <div class="tierrow"><span class="what">title · Inter 800</span><span class="new-tier-title">No Weapon (Live)</span></div>
+        <div class="tierrow"><span class="what">title · Inter 800</span><span class="new-tier-title">Ablaze Fire Tee</span></div>
+      </div>
+      <div class="spec">Bebas = labels only (≤14px)
+Inter 700/800 = titles + th
+Anton = display only (40px+)</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. EM RATIONING -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">5</span><h3>Rationing the italic</h3></div>
+  <p class="lab-note">index.html uses the Playfair italic <code>&lt;em&gt;</code> 12 times, booking.html 9 times. Here is one page's worth of section heads as they run today, then with the motif kept for the two that carry the page.</p>
+  <div class="ab">
+    <div class="pane"><span class="tag now">Now · every head</span>
+      <div class="ration" style="margin-top:26px">
+        <div class="r"><div class="mini-eye">The Movement</div><div class="mini-h2">More than <em>a choir.</em></div></div>
+        <div class="r"><div class="mini-eye">Singles &amp; Releases</div><div class="mini-h2">The <em>sound</em> of a generation.</div></div>
+        <div class="r"><div class="mini-eye">Watch &amp; Subscribe</div><div class="mini-h2">Real moments. <em>Real fire.</em></div></div>
+        <div class="r"><div class="mini-eye">Official Ablaze Drop</div><div class="mini-h2">Wear <em>the fire.</em></div></div>
+        <div class="r"><div class="mini-eye">Questions</div><div class="mini-h2">Know the <em>movement.</em></div></div>
+      </div>
+    </div>
+    <div class="pane"><span class="tag new">Proposed · 2 of 5</span>
+      <div class="ration" style="margin-top:26px">
+        <div class="r hit"><div class="mini-eye">The Movement</div><div class="mini-h2">More than <em>a choir.</em></div></div>
+        <div class="r"><div class="mini-eye">Singles &amp; Releases</div><div class="mini-h2">The sound of a generation.</div></div>
+        <div class="r hit"><div class="mini-eye">Watch &amp; Subscribe</div><div class="mini-h2">Real moments. <em>Real fire.</em></div></div>
+        <div class="r"><div class="mini-eye">Official Ablaze Drop</div><div class="mini-h2">Wear the fire.</div></div>
+        <div class="r"><div class="mini-eye">Questions</div><div class="mini-h2">Know the movement.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SERIF -->
+<section class="lab-sec">
+  <div class="lab-h"><span class="lab-n">6</span><h3>Optional: the serif</h3></div>
+  <p class="lab-note">Playfair's hairlines get fragile in orange on black at the small sizes it's used at. Fraunces has an optical-size axis that thickens them automatically as they shrink. Same sizes, both columns. This one is a bigger swing, only worth it if the small serif bits look thin to you.</p>
+  <div class="ab">
+    <div class="pane"><span class="tag now">Playfair Display</span>
+      <div class="serif-row" style="margin-top:26px">
+        <div class="serif-now" style="font-size:42px;color:var(--gold)">$2,500</div>
+        <div class="serif-now" style="font-size:26px">A generation rising right now.</div>
+        <div class="serif-now" style="font-size:19px">$34.00</div>
+        <div class="serif-now" style="font-size:16px">Stellar Gospel Music Awards</div>
+      </div>
+    </div>
+    <div class="pane"><span class="tag alt">Fraunces</span>
+      <div class="serif-row" style="margin-top:26px">
+        <div class="serif-new" style="font-size:42px;color:var(--gold);font-variation-settings:'opsz' 60">$2,500</div>
+        <div class="serif-new" style="font-size:26px;font-variation-settings:'opsz' 30">A generation rising right now.</div>
+        <div class="serif-new" style="font-size:19px;font-variation-settings:'opsz' 18">$34.00</div>
+        <div class="serif-new" style="font-size:16px;font-variation-settings:'opsz' 14">Stellar Gospel Music Awards</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. SCALE -->
+<section class="lab-sec" style="border-bottom:none">
+  <div class="lab-h"><span class="lab-n">7</span><h3>The scale, if we adopt tokens</h3></div>
+  <p class="lab-note">Replaces the 20 hand-picked sizes currently in the stylesheet. Every heading and paragraph maps to one of these seven, so sizes stop drifting page to page.</p>
+  <div class="ladder">
+    <div class="rung"><span class="k">--t-h1</span><span class="v">clamp(60px,11vw,190px)</span><span class="s" style="font-size:var(--t-h1)">Ablaze</span></div>
+    <div class="rung"><span class="k">--t-h2</span><span class="v">clamp(44px,6.5vw,104px)</span><span class="s" style="font-size:var(--t-h2)">Bring the fire</span></div>
+    <div class="rung"><span class="k">--t-h3</span><span class="v">clamp(24px,2.4vw,34px)</span><span class="s" style="font-size:var(--t-h3)">Partner tier</span></div>
+    <div class="rung"><span class="k">--t-h4</span><span class="v">clamp(19px,1.6vw,24px)</span><span class="s" style="font-size:var(--t-h4);font-family:'Inter';font-weight:800;text-transform:none;letter-spacing:-.015em">Travel &amp; Outreach</span></div>
+    <div class="rung"><span class="k">--t-lead</span><span class="v">clamp(17px,1.35vw,21px)</span><span class="s" style="font-size:var(--t-lead);font-family:'Inter';font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-soft)">Ablaze travels nationally.</span></div>
+    <div class="rung"><span class="k">--t-body</span><span class="v">clamp(15px,1.05vw,17px)</span><span class="s" style="font-size:var(--t-body);font-family:'Inter';font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-soft)">Worship, discipleship, and youth engagement rooted in real faith.</span></div>
+    <div class="rung"><span class="k">--t-label</span><span class="v">clamp(11px,.75rem,13px)</span><span class="s" style="font-size:var(--t-label);font-family:'Bebas Neue';letter-spacing:.26em;color:var(--fire-2)">Singles &amp; Releases</span></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

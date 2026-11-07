@@ -5,8 +5,10 @@
 <title>Book Ablaze — Booking & Inquiries | Ablaze Youth Choir</title>
 <meta name="description" content="Book Ablaze Youth Choir for your conference, festival, youth night, or church service. Three tiers, transparent pricing, national availability." />
 <link rel="icon" type="image/svg+xml" href="assets/icons/fire.svg">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://ablazeyc.com/booking" />
 <meta property="og:title" content="Book Ablaze Youth Choir" />
 <meta property="og:description" content="Book Ablaze Youth Choir for your conference, festival, youth night, or church service. Transparent tiers, national availability." />
@@ -15,6 +17,7 @@
 <meta property="og:image" content="https://ablazeyc.com/assets/photos/og-ablaze-16x9.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://ablazeyc.com/assets/photos/og-ablaze-16x9.jpg" />
+<link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
 {
@@ -28,9 +31,9 @@
       "url": "https://ablazeyc.com/booking",
       "description": "Book Ablaze Youth Choir for churches, conferences, festivals, and youth nights. Three tiers from local worship sets to national fly-out experiences.",
       "offers": [
-        { "@type": "Offer", "name": "Worship Set — Local, Same-Day", "price": "5000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "30–45 minute worship set, up to 15 youth vocalists, director + tracks, greater Baton Rouge / drivable same-day." },
-        { "@type": "Offer", "name": "Full Experience — Regional, Overnight", "price": "12000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "60-minute headline set, up to 25 youth vocalists, live band + production, Marky Mark solo features, charter travel + overnight lodging." },
-        { "@type": "Offer", "name": "National / Fly-Out — Air Travel, Multi-Day", "price": "25000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "75–90 minute concert experience, full ensemble + band + production, air travel, multi-night lodging, custom press & promo." }
+        { "@type": "Offer", "name": "Worship Set (Local, Same-Day)", "price": "5000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "30–45 minute worship set, up to 15 youth vocalists, director + tracks, greater Baton Rouge / drivable same-day." },
+        { "@type": "Offer", "name": "Full Experience (Regional, Overnight)", "price": "12000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "60-minute headline set, up to 25 youth vocalists, live band + production, Marky Mark solo features, charter travel + overnight lodging." },
+        { "@type": "Offer", "name": "National / Fly-Out (Air Travel, Multi-Day)", "price": "25000", "priceCurrency": "USD", "url": "https://ablazeyc.com/booking", "description": "75–90 minute concert experience, full ensemble + band + production, air travel, multi-night lodging, custom press & promo." }
       ]
     },
     {
@@ -44,7 +47,7 @@
       "mainEntity": [
         { "@type": "Question", "name": "How far in advance should we book?", "acceptedAnswer": { "@type": "Answer", "text": "60+ days for events within Louisiana, 90+ days for out-of-state. Best dates fill quickly, especially around conference season." } },
         { "@type": "Question", "name": "Do you travel internationally?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on a case-by-case basis. International bookings are quoted custom under our National Tour tier. Visa lead time and travel logistics typically require 4–6 months notice." } },
-        { "@type": "Question", "name": "Can we book just Marky Mark for a speaking or solo appearance?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Mark Ellis Jr., our director, accepts solo bookings — speaking, solo worship, content collabs, and youth conferences." } },
+        { "@type": "Question", "name": "Can we book just Marky Mark for a speaking or solo appearance?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Mark Ellis Jr., our director, accepts solo bookings: speaking, solo worship, content collabs, and youth conferences." } },
         { "@type": "Question", "name": "What's the difference between Full Experience and National Tour?", "acceptedAnswer": { "@type": "Answer", "text": "Full Experience is for single-night premier events within driving distance. National Tour adds multi-day capacity, full production, branded merch, and custom promo." } },
         { "@type": "Question", "name": "Are tracks acceptable, or do you require live band?", "acceptedAnswer": { "@type": "Answer", "text": "The Worship Set tier runs with director + tracks. Full Experience and National Tour include our live band." } },
         { "@type": "Question", "name": "Do you offer a non-profit or church plant discount?", "acceptedAnswer": { "@type": "Answer", "text": "We work with a limited number of non-profits and church plants each year. Mention it in your inquiry." } },
@@ -66,17 +69,17 @@
 <nav class="nav"><div class="nav-inner">
   <a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a>
   <ul><li><a href="about.html">About</a></li><li><a href="music.html">Music</a></li><li><a href="booking.html">Booking</a></li><li><a href="merch.html">Merch</a></li><li><a href="marky.html">Our Director</a></li><li><a href="press.html">Press</a></li><li><a href="contact.html">Contact</a></li></ul>
-  <a href="#inquire" class="btn btn-fire cta">Inquire Now <span class="arrow">↗</span></a><button class="menu-btn" id="menuBtn">☰</button>
+  <a href="#inquire" class="btn btn-fire cta">Inquire Now <span class="arrow">↗</span></a><button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
 </div></nav>
 <div class="m-menu" id="mMenu"><button class="close" id="closeBtn">×</button><a href="about.html">About</a><a href="music.html">Music</a><a href="booking.html">Booking</a><a href="merch.html">Merch</a><a href="marky.html">Our Director</a><a href="sponsor.html">Sponsor</a><a href="press.html">Press</a><a href="contact.html">Contact</a></div>
 
-<header class="page-hero">
+<header class="page-hero page-hero--image">
+  <div class="ph-bg" aria-hidden="true"><img src="assets/photos/press/choir-red-ensemble.jpg" alt="" fetchpriority="high"></div>
   <div id="embers"></div>
   <div class="wrap">
     <div class="crumbs"><a href="index.html">Home</a> &nbsp;/&nbsp; Booking</div>
-    <div class="eyebrow">Book Ablaze</div>
     <h1>Bring the fire<br><em>to your stage.</em></h1>
-    <p class="lede">Three turn-key tiers, national availability, and a worship experience built to move people. Get a quote in 48 hours — or skip the back-and-forth and lock in a date now.</p>
+    <p class="lede">Book the 2026 Stellar Awards New Artist of the Year. Three turn-key tiers, national availability, and a worship experience built to move people. Get a quote in 48 hours, or skip the back-and-forth and lock in a date now.</p>
     <div class="actions" style="margin-top:32px">
       <a href="#inquire" class="btn btn-fire">Start Inquiry <span class="arrow">↗</span></a>
       <a href="#tiers" class="btn btn-ghost">See Tiers</a>
@@ -86,33 +89,45 @@
 
 <section class="block dark reveal" id="tiers">
   <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">Pricing</div><h2>Three ways<br><em>to book.</em></h2></div><p>Every Ablaze booking moves a youth ensemble — students, musicians, and chaperones. The starting ranges below reflect real logistics (travel, lodging, meals, supervision); your final quote depends on headcount, distance, travel mode, and overnight needs.</p></div>
+    <div class="sec-head"><div class="left"><div class="eyebrow">Pricing</div><h2>Three ways<br><em>to book.</em></h2></div><p>Every Ablaze booking moves a youth ensemble: students, musicians, and chaperones. The starting ranges below reflect real logistics (travel, lodging, meals, supervision); your final quote depends on headcount, distance, travel mode, and overnight needs.</p></div>
     <div class="tier-grid">
-      <div class="tier"><h3>Worship Set</h3><div class="tier-sub">Local · Same-Day</div><div class="price"><small>Starting At</small>$5,000</div><ul><li>30–45 minute worship set</li><li>Up to 15 youth vocalists</li><li>Director + tracks (live band add-on)</li><li>Greater Baton Rouge / drivable same-day</li><li>Ground transportation + chaperones</li><li>Team meals &amp; per diem</li></ul><a href="#inquire" class="btn btn-ghost">Inquire</a></div>
-      <div class="tier feature"><span class="tag">Most Booked</span><h3>Full Experience</h3><div class="tier-sub">Regional · Overnight</div><div class="price"><small>Starting At</small>$12,000</div><ul><li>60-minute headline set</li><li>Up to 25 youth vocalists</li><li>Live band + production</li><li>Marky Mark solo features</li><li>Charter travel + overnight lodging</li><li>Musicians, chaperones, meals &amp; per diem</li><li>Branded merch table</li></ul><a href="#inquire" class="btn btn-fire">Book Now <span class="arrow">↗</span></a></div>
-      <div class="tier"><h3>National / Fly-Out</h3><div class="tier-sub">Air Travel · Multi-Day</div><div class="price"><small>Starting At</small>$25,000+</div><ul><li>75–90 minute concert experience</li><li>Full ensemble + band + production team</li><li>Air travel for choir, band &amp; chaperones</li><li>Multi-night lodging + ground transport</li><li>Meals, per diem &amp; youth stipends</li><li>Custom press &amp; promo support</li></ul><a href="#inquire" class="btn btn-ghost">Request Quote</a></div>
+      <div class="tier"><h3>Worship Set</h3><div class="tier-sub">Local · Same-Day</div><div class="price"><small>Starting At</small>$5,000</div><ul><li>30–45 minute worship set</li><li>Up to 15 youth vocalists</li><li>Director + tracks (live band add-on)</li><li>Greater Baton Rouge / drivable same-day</li><li>Ground transportation + chaperones</li><li>Team meals &amp; per diem</li></ul><a href="#inquire" class="btn btn-ghost" data-tier="worship">Inquire</a></div>
+      <div class="tier feature"><span class="tag">Most Booked</span><h3>Full Experience</h3><div class="tier-sub">Regional · Overnight</div><div class="price"><small>Starting At</small>$12,000</div><ul><li>60-minute headline set</li><li>Up to 25 youth vocalists</li><li>Live band + production</li><li>Marky Mark solo features</li><li>Charter travel + overnight lodging</li><li>Musicians, chaperones, meals &amp; per diem</li><li>Branded merch table</li></ul><a href="#inquire" class="btn btn-fire" data-tier="full">Book Now <span class="arrow">↗</span></a></div>
+      <div class="tier"><h3>National / Fly-Out</h3><div class="tier-sub">Air Travel · Multi-Day</div><div class="price"><small>Starting At</small>$25,000+</div><ul><li>75–90 minute concert experience</li><li>Full ensemble + band + production team</li><li>Air travel for choir, band &amp; chaperones</li><li>Multi-night lodging + ground transport</li><li>Meals, per diem &amp; youth stipends</li><li>Custom press &amp; promo support</li></ul><a href="#inquire" class="btn btn-ghost" data-tier="national">Request Quote</a></div>
     </div>
-    <div style="margin-top:32px;padding:20px 24px;border:1px solid var(--line);border-left:3px solid var(--fire-3);background:#0d0805;border-radius:6px;color:#cfc7bb;font-size:14px;line-height:1.6"><strong style="color:#fff;letter-spacing:.04em">Why these ranges?</strong> Ablaze is a youth ensemble — every booking safely moves students, musicians, and chaperones. Quotes are built from real costs: transportation (van, charter, or air), lodging, meals and per diem, musicians, adult supervision, sound, and insurance — not a flat stage fee. We scale options for churches, schools, and nonprofits, and we'll always work toward your budget where we can.</div>
+    <div class="note-card"><strong>Why these ranges?</strong> Ablaze is a youth ensemble, so every booking safely moves students, musicians, and chaperones. Quotes are built from real costs: transportation (van, charter, or air), lodging, meals and per diem, musicians, adult supervision, sound, and insurance, not a flat stage fee. We scale options for churches, schools, and nonprofits, and we'll always work toward your budget where we can.</div>
+    <div class="reel-grid tier-reel">
+      <div class="reel-video">
+        <video controls muted playsinline preload="none" poster="assets/photos/watch-cover.jpg">
+          <source src="assets/video/hero-loop.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="reel-side">
+        <div class="photo"><img src="assets/photos/press/choir-fire-stage.jpg" alt="Ablaze Youth Choir performing under stage fire effects" loading="lazy" decoding="async"><div class="ph-overlay"></div></div>
+        <div class="photo"><img src="assets/photos/press/choir-red-group.jpg" alt="Ablaze Youth Choir ensemble portrait" loading="lazy" decoding="async"><div class="ph-overlay"></div></div>
+      </div>
+    </div>
+    <p class="reel-cap">Live performance footage and press photography from recent Ablaze appearances.</p>
   </div>
 </section>
 
 <section class="block darker reveal">
   <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">Compare</div><h2>What's <em>included.</em></h2></div></div>
+    <div class="sec-head"><div class="left"><h2>What's <em>included.</em></h2></div></div>
     <div style="overflow-x:auto"><table class="matrix">
       <thead><tr><th>Feature</th><th>Worship Set</th><th>Full Experience</th><th>National / Fly-Out</th></tr></thead>
       <tbody>
         <tr><td>Performance Length</td><td>30–45 min</td><td>60 min</td><td>75–90 min</td></tr>
         <tr><td>Youth Vocalists</td><td>Up to 15</td><td>Up to 25</td><td>Full ensemble</td></tr>
         <tr><td>Live Band</td><td class="no">Add-On</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-        <tr><td>Marky Mark Features</td><td class="no">—</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Marky Mark Features</td><td class="no">Not included</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
         <tr><td>Transportation</td><td>Local ground</td><td>Regional charter</td><td class="yes">Air + ground</td></tr>
         <tr><td>Overnight Lodging</td><td class="no">Not needed</td><td class="yes">Included</td><td class="yes">Included</td></tr>
         <tr><td>Chaperones &amp; Supervision</td><td class="yes">Included</td><td class="yes">Included</td><td class="yes">Included</td></tr>
         <tr><td>Meals &amp; Per Diem</td><td class="yes">Included</td><td class="yes">Included</td><td class="yes">Included</td></tr>
         <tr><td>Meet & Greet</td><td class="no">Add-On</td><td class="yes">Included</td><td class="yes">Included</td></tr>
         <tr><td>Merch Table</td><td class="no">Add-On</td><td class="yes">Yes</td><td class="yes">Branded Package</td></tr>
-        <tr><td>Promo Content</td><td class="no">—</td><td>Social shoutouts</td><td class="yes">Custom Press & Promo</td></tr>
+        <tr><td>Promo Content</td><td class="no">Not included</td><td>Social shoutouts</td><td class="yes">Custom Press & Promo</td></tr>
       </tbody>
     </table></div>
   </div>
@@ -120,62 +135,51 @@
 
 <section class="block dark reveal">
   <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">Where We Fit</div><h2>Made for<br><em>moments that move.</em></h2></div></div>
+    <div class="sec-head"><div class="left"><h2>Made for<br><em>moments that move.</em></h2></div></div>
     <div class="pillars" style="grid-template-columns:repeat(4,1fr)">
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#church"></use></svg></div><h4 style="color:#fff">Churches</h4><p style="color:#cfc7bb">Special events, anniversaries, revivals, and homecomings.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#mic"></use></svg></div><h4 style="color:#fff">Conferences</h4><p style="color:#cfc7bb">Youth conferences, leadership summits, and ministry conventions.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#tent"></use></svg></div><h4 style="color:#fff">Festivals</h4><p style="color:#cfc7bb">Outdoor festivals, citywide events, and gospel showcases.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#moon"></use></svg></div><h4 style="color:#fff">Youth Nights</h4><p style="color:#cfc7bb">Friday-night youth events, college campus nights, and worship experiences.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#church"></use></svg></div><h3 style="color:#fff">Churches</h3><p style="color:#cfc7bb">Special events, anniversaries, revivals, and homecomings.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#mic"></use></svg></div><h3 style="color:#fff">Conferences</h3><p style="color:#cfc7bb">Youth conferences, leadership summits, and ministry conventions.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#tent"></use></svg></div><h3 style="color:#fff">Festivals</h3><p style="color:#cfc7bb">Outdoor festivals, citywide events, and gospel showcases.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#moon"></use></svg></div><h3 style="color:#fff">Youth Nights</h3><p style="color:#cfc7bb">Friday-night youth events, college campus nights, and worship experiences.</p></div>
     </div>
-    <div class="sunday-note" style="margin-top:32px;padding:20px 24px;border:1px solid var(--line);border-left:3px solid var(--fire-3);background:#0d0805;border-radius:6px;color:#cfc7bb;font-size:14px;line-height:1.6"><strong style="color:#fff;letter-spacing:.04em">A note on Sundays:</strong> Ablaze worships every Sunday at our home congregation, United Christian Faith Ministries, and ministers there on the fourth Sunday of each month. Sunday mornings through Sunday noon are not available for outside bookings. Please request a Monday–Saturday date — or a Sunday evening — below.</div>
+    <div class="note-card sunday-note"><strong>A note on Sundays:</strong> Ablaze worships every Sunday at our home congregation, United Christian Faith Ministries, and ministers there on the fourth Sunday of each month. Sunday mornings through Sunday noon are not available for outside bookings. Please request a Monday–Saturday date, or a Sunday evening, below.</div>
   </div>
 </section>
 
 <section class="block darker reveal">
   <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">Hosts Say</div><h2>Real reviews<br><em>from real venues.</em></h2></div></div>
-    <div class="testi-grid">
-      <div class="testi"><div class="quote">"They didn't just perform — they led. The energy in our youth section was unmatched. Our students are still talking about it months later."</div><div class="author"><div class="av"></div><div><div class="name">Pastor Brandon Hayes</div><div class="role">Lead Pastor · NOLA</div></div></div></div>
-      <div class="testi"><div class="quote">"Booking Ablaze was the easiest decision and the highest impact moment of our entire conference. They came ready, professional, and full of fire."</div><div class="author"><div class="av"></div><div><div class="name">LaToya Williams</div><div class="role">Conference Director · Houston</div></div></div></div>
-      <div class="testi"><div class="quote">"My team and I weren't sure what to expect — Marky and the choir gave us a worship moment that genuinely shifted the room. We'll have them back every year."</div><div class="author"><div class="av"></div><div><div class="name">Pastor T. Jefferson</div><div class="role">Senior Pastor · Atlanta</div></div></div></div>
+    <div class="sec-head"><div class="left"><h2>What we need<br><em>from you.</em></h2></div><p>Standard requirements. Full details in the contract.</p></div>
+    <div class="pillars" style="grid-template-columns:repeat(3,1fr)">
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#plane"></use></svg></div><h3 style="color:#fff">Travel</h3><p style="color:#cfc7bb">Worship Set covers in-state. Full Experience covers within 500 miles. National Tour covers full logistics.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#bed"></use></svg></div><h3 style="color:#fff">Lodging</h3><p style="color:#cfc7bb">Overnight events require host-provided lodging based on choir size. Rooming list provided 14 days out.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#utensils"></use></svg></div><h3 style="color:#fff">Hospitality</h3><p style="color:#cfc7bb">Day-of meals or per diem. Hospitality rider sent with the agreement.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#speaker"></use></svg></div><h3 style="color:#fff">Sound & Stage</h3><p style="color:#cfc7bb">Professionally operated sound system, monitors, stage. Tech rider sent ahead.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#calendar"></use></svg></div><h3 style="color:#fff">Lead Time</h3><p style="color:#cfc7bb">Book 60+ days in advance for in-region, 90+ for out-of-state.</p></div>
+      <div class="pillar" style="background:var(--surf-1);border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#doc"></use></svg></div><h3 style="color:#fff">Contract</h3><p style="color:#cfc7bb">Signed agreement and 50% deposit secure the date. Balance due day-of.</p></div>
     </div>
   </div>
 </section>
 
 <section class="block dark reveal">
-  <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">Logistics</div><h2>What we need<br><em>from you.</em></h2></div><p>Standard requirements — full details in the contract.</p></div>
-    <div class="pillars" style="grid-template-columns:repeat(3,1fr)">
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#plane"></use></svg></div><h4 style="color:#fff">Travel</h4><p style="color:#cfc7bb">Worship Set covers in-state. Full Experience covers within 500 miles. National Tour covers full logistics.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#bed"></use></svg></div><h4 style="color:#fff">Lodging</h4><p style="color:#cfc7bb">Overnight events require host-provided lodging based on choir size. Rooming list provided 14 days out.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#utensils"></use></svg></div><h4 style="color:#fff">Hospitality</h4><p style="color:#cfc7bb">Day-of meals or per diem. Hospitality rider sent with the agreement.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#speaker"></use></svg></div><h4 style="color:#fff">Sound & Stage</h4><p style="color:#cfc7bb">Professionally operated sound system, monitors, stage. Tech rider sent ahead.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#calendar"></use></svg></div><h4 style="color:#fff">Lead Time</h4><p style="color:#cfc7bb">Book 60+ days in advance for in-region, 90+ for out-of-state.</p></div>
-      <div class="pillar" style="background:#0d0805;border:1px solid var(--line)"><div class="ico"><svg class="ico-svg" aria-hidden="true"><use href="assets/icons/icons.svg#doc"></use></svg></div><h4 style="color:#fff">Contract</h4><p style="color:#cfc7bb">Signed agreement and 50% deposit secure the date. Balance due day-of.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block darker reveal">
   <div class="wrap">
     <div class="sec-head"><div class="left"><div class="eyebrow">How It Works</div><h2>From inquiry<br><em>to ignition.</em></h2></div></div>
     <div class="timeline">
-      <div class="item"><div class="yr">Step 01 · Day 1</div><h4>Submit Inquiry</h4><p>Fill out the form below with your event details, budget tier, and vision.</p></div>
-      <div class="item"><div class="yr">Step 02 · Within 48 Hours</div><h4>Custom Quote</h4><p>Our booking team reviews and sends a tailored proposal with pricing, scope, and dates.</p></div>
-      <div class="item"><div class="yr">Step 03 · Within 7 Days</div><h4>Contract & Deposit</h4><p>Sign the agreement, submit the 50% deposit, and your date is locked in.</p></div>
-      <div class="item"><div class="yr">Step 04 · 30 Days Out</div><h4>Production Sync</h4><p>We sync with your team on tech, run-of-show, hospitality, and custom moments.</p></div>
-      <div class="item"><div class="yr">Step 05 · Event Day</div><h4>Bring The Fire</h4><p>Soundcheck, prayer, performance. We come ready to lead, ready to serve, ready to ignite.</p></div>
+      <div class="item"><div class="yr">Step 01 · Day 1</div><h3>Submit Inquiry</h3><p>Fill out the form below with your event details, budget tier, and vision.</p></div>
+      <div class="item"><div class="yr">Step 02 · Within 48 Hours</div><h3>Custom Quote</h3><p>Our booking team reviews and sends a tailored proposal with pricing, scope, and dates.</p></div>
+      <div class="item"><div class="yr">Step 03 · Within 7 Days</div><h3>Contract & Deposit</h3><p>Sign the agreement, submit the 50% deposit, and your date is locked in.</p></div>
+      <div class="item"><div class="yr">Step 04 · 30 Days Out</div><h3>Production Sync</h3><p>We sync with your team on tech, run-of-show, hospitality, and custom moments.</p></div>
+      <div class="item"><div class="yr">Step 05 · Event Day</div><h3>Bring The Fire</h3><p>Soundcheck, prayer, performance. We come ready to lead, ready to serve, ready to ignite.</p></div>
     </div>
   </div>
 </section>
 
-<section class="block dark reveal">
+<section class="block darker reveal">
   <div class="wrap">
-    <div class="sec-head"><div class="left"><div class="eyebrow">FAQ</div><h2>Common <em>questions.</em></h2></div></div>
+    <div class="sec-head"><div class="left"><h2>Common <em>questions.</em></h2></div></div>
     <div class="faq">
       <details><summary>How far in advance should we book?</summary><p>60+ days for events within Louisiana, 90+ days for out-of-state. Best dates fill quickly, especially around conference season.</p></details>
       <details><summary>Do you travel internationally?</summary><p>Yes, on a case-by-case basis. International bookings are quoted custom under our National Tour tier. Visa lead time and travel logistics typically require 4–6 months notice.</p></details>
-      <details><summary>Can we book just Marky Mark for a speaking or solo appearance?</summary><p>Yes. Mark Ellis Jr., <a href="marky.html" style="color:var(--fire-3)">our director</a>, accepts solo bookings — speaking, solo worship, content collabs, and youth conferences.</p></details>
+      <details><summary>Can we book just Marky Mark for a speaking or solo appearance?</summary><p>Yes. Mark Ellis Jr., <a href="marky.html" style="color:var(--fire-3)">our director</a>, accepts solo bookings: speaking, solo worship, content collabs, and youth conferences.</p></details>
       <details><summary>What's the difference between Full Experience and National Tour?</summary><p>Full Experience is for single-night premier events within driving distance. National Tour adds multi-day capacity, full production, branded merch, and custom promo.</p></details>
       <details><summary>Are tracks acceptable, or do you require live band?</summary><p>The Worship Set tier runs with director + tracks. Full Experience and National Tour include our live band.</p></details>
       <details><summary>Do you offer a non-profit or church plant discount?</summary><p>We work with a limited number of non-profits and church plants each year. Mention it in your inquiry.</p></details>
@@ -184,30 +188,57 @@
   </div>
 </section>
 
+<section class="block dark reveal">
+  <div class="wrap">
+    <div class="sec-head sec-head--serif"><div class="left"><h2>Real reviews <em>from real venues.</em></h2></div></div>
+    <div class="testi-grid">
+      <div class="testi"><div class="quote">"They didn't just perform. They led. The energy in our youth section was unmatched. Our students are still talking about it months later."</div><div class="author"><div><div class="name">Pastor Brandon Hayes</div><div class="role">Lead Pastor · NOLA</div></div></div></div>
+      <div class="testi"><div class="quote">"Booking Ablaze was the easiest decision and the highest impact moment of our entire conference. They came ready, professional, and full of fire."</div><div class="author"><div><div class="name">LaToya Williams</div><div class="role">Conference Director · Houston</div></div></div></div>
+      <div class="testi"><div class="quote">"My team and I weren't sure what to expect. Marky and the choir gave us a worship moment that genuinely shifted the room. We'll have them back every year."</div><div class="author"><div><div class="name">Pastor T. Jefferson</div><div class="role">Senior Pastor · Atlanta</div></div></div></div>
+    </div>
+  </div>
+</section>
+
 <section class="block darker reveal" id="inquire">
   <div class="wrap">
     <div class="sec-head"><div class="left"><div class="eyebrow">Booking Inquiry</div><h2>Start the<br><em>conversation.</em></h2></div><p>Expect a response within 48 hours.</p></div>
-    <form class="form" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" style="max-width:880px">
+    <form class="form form--staged" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" style="max-width:880px">
       <input type="hidden" name="form-name" value="booking">
       <p hidden><label>Don't fill: <input name="bot-field"></label></p>
-      <div class="row"><div><label>First Name *</label><input type="text" name="first_name" required></div><div><label>Last Name *</label><input type="text" name="last_name" required></div></div>
-      <div class="row"><div><label>Email *</label><input type="email" name="email" required></div><div><label>Phone</label><input type="tel" name="phone"></div></div>
-      <div class="row"><div><label>Organization / Church *</label><input type="text" name="org" required></div><div><label>Your Role *</label><input type="text" name="role" placeholder="e.g. Lead Pastor, Booking Manager" required></div></div>
-      <div class="row">
-        <div><label>Event Type *</label><select name="event_type" required><option value="">Select...</option><option>Weeknight Service</option><option>Youth Night</option><option>Conference</option><option>Festival</option><option>Concert</option><option>Anniversary / Special Service</option><option>College Campus</option><option>Other</option></select></div>
-        <div><label>Booking Tier *</label><select name="tier" required><option value="">Select...</option><option>Worship Set — Local · from $5,000</option><option>Full Experience — Regional · from $12,000</option><option>National / Fly-Out — from $25,000</option><option>Custom / Need Guidance</option></select></div>
+      <div class="form-steps" aria-hidden="true">
+        <div class="fs active"><span class="n">1</span><span class="t">About You</span></div>
+        <div class="fs"><span class="n">2</span><span class="t">Your Event</span></div>
+        <div class="fs"><span class="n">3</span><span class="t">Details</span></div>
       </div>
-      <div class="row"><div><label>Event Date *</label><input type="date" name="event_date" required></div><div><label>Backup Date</label><input type="date" name="backup_date"></div></div>
-      <div class="row"><div><label>City *</label><input type="text" name="city" required></div><div><label>State *</label><input type="text" name="state" required></div></div>
-      <div class="row"><div><label>Venue Name *</label><input type="text" name="venue" required></div><div><label>Expected Audience Size *</label><select name="audience" required><option value="">Select...</option><option>Under 250</option><option>250–750</option><option>750–2,000</option><option>2,000–5,000</option><option>5,000+</option></select></div></div>
-      <div class="row">
-        <div><label>Budget Range *</label><select name="budget" required><option value="">Select...</option><option>Under $7,500</option><option>$7,500–$15,000</option><option>$15,000–$30,000</option><option>$30,000+</option><option>Flexible / Open</option></select></div>
-        <div><label>How did you hear about us?</label><select name="referral"><option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Friend / Pastor Referral</option><option>Search</option><option>Other</option></select></div>
+      <div class="fstep active" role="group" aria-label="Step 1 of 3: About you">
+        <div class="row"><div><label>First Name *</label><input type="text" name="first_name" autocomplete="given-name" required></div><div><label>Last Name *</label><input type="text" name="last_name" autocomplete="family-name" required></div></div>
+        <div class="row"><div><label>Email *</label><input type="email" name="email" autocomplete="email" required></div><div><label>Phone</label><input type="tel" name="phone" autocomplete="tel"></div></div>
+        <div class="row"><div><label>Organization / Church *</label><input type="text" name="org" autocomplete="organization" required></div><div><label>Your Role *</label><input type="text" name="role" placeholder="e.g. Lead Pastor, Booking Manager" required></div></div>
+        <div class="form-nav"><button type="button" class="btn btn-fire btn-next">Next: Your Event <span class="arrow">↗</span></button></div>
       </div>
-      <div class="row"><div><label>Travel &amp; Lodging Notes</label><textarea name="travel" placeholder="Airport, drive distance, who covers travel/lodging, hotel blocks, etc. (optional)"></textarea></div><div><label>Sound / Stage / Media</label><textarea name="stage_media" placeholder="Sound system, monitors, stage size, screens, livestream/recording plans, in-house engineer? (optional)"></textarea></div></div>
-      <div class="full"><label>Tell us about your event *</label><textarea name="vision" placeholder="What's the vibe? What's the run-of-show? Are you booking us as headline, co-headline, or feature? Any custom moments?" required></textarea></div>
-      <div class="full check"><input type="checkbox" name="agree" id="agree" required><label for="agree" style="margin:0">I understand pricing is "starting at" and a custom quote will be provided based on my event details.</label></div>
-      <div class="full"><button type="submit" class="btn btn-fire">Submit Inquiry <span class="arrow">↗</span></button></div>
+      <div class="fstep" role="group" aria-label="Step 2 of 3: Your event">
+        <div class="row">
+          <div><label>Event Type *</label><select name="event_type" required><option value="">Select...</option><option>Weeknight Service</option><option>Youth Night</option><option>Conference</option><option>Festival</option><option>Concert</option><option>Anniversary / Special Service</option><option>College Campus</option><option>Other</option></select></div>
+          <div><label>Booking Tier *</label><select name="tier" required><option value="">Select...</option><option>Worship Set · Local · from $5,000</option><option>Full Experience · Regional · from $12,000</option><option>National / Fly-Out · from $25,000</option><option>Custom / Need Guidance</option></select></div>
+        </div>
+        <div class="row">
+          <div><label>Event Date *</label><input type="date" name="event_date" required><div class="hint">We book 60+ days out for in-region dates, 90+ for out-of-state.</div></div>
+          <div><label>Backup Date</label><input type="date" name="backup_date"></div>
+        </div>
+        <div class="row"><div><label>City *</label><input type="text" name="city" autocomplete="address-level2" required></div><div><label>State *</label><input type="text" name="state" autocomplete="address-level1" required></div></div>
+        <div class="row"><div><label>Venue Name *</label><input type="text" name="venue" required></div><div><label>Expected Audience Size *</label><select name="audience" required><option value="">Select...</option><option>Under 250</option><option>250–750</option><option>750–2,000</option><option>2,000–5,000</option><option>5,000+</option></select></div></div>
+        <div class="form-nav"><button type="button" class="btn btn-ghost btn-back">Back</button><button type="button" class="btn btn-fire btn-next">Next: Details <span class="arrow">↗</span></button></div>
+      </div>
+      <div class="fstep" role="group" aria-label="Step 3 of 3: Details">
+        <div class="row">
+          <div><label>Budget Range *</label><select name="budget" required><option value="">Select...</option><option>Under $7,500</option><option>$7,500–$15,000</option><option>$15,000–$30,000</option><option>$30,000+</option><option>Flexible / Open</option></select></div>
+          <div><label>How did you hear about us?</label><select name="referral"><option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Friend / Pastor Referral</option><option>Search</option><option>Other</option></select></div>
+        </div>
+        <div class="row"><div><label>Travel &amp; Lodging Notes</label><textarea name="travel" placeholder="Airport, drive distance, who covers travel/lodging, hotel blocks, etc. (optional)"></textarea></div><div><label>Sound / Stage / Media</label><textarea name="stage_media" placeholder="Sound system, monitors, stage size, screens, livestream/recording plans, in-house engineer? (optional)"></textarea></div></div>
+        <div class="full"><label>Tell us about your event *</label><textarea name="vision" placeholder="What's the vibe? What's the run-of-show? Are you booking us as headline, co-headline, or feature? Any custom moments?" required></textarea></div>
+        <div class="full check"><input type="checkbox" name="agree" id="agree" required><label for="agree" style="margin:0">I understand pricing is "starting at" and a custom quote will be provided based on my event details.</label></div>
+        <div class="form-nav"><button type="button" class="btn btn-ghost btn-back">Back</button><button type="submit" class="btn btn-fire">Submit Inquiry <span class="arrow">↗</span></button></div>
+      </div>
     </form>
   </div>
 </section>
@@ -215,12 +246,11 @@
 <footer><div class="wrap">
   <div class="foot-grid">
     <div class="foot-brand"><a href="index.html" class="logo"><img src="assets/logo/logo-white.svg" alt="Ablaze Youth Choir"></a><p>A spirit-led youth gospel movement out of <a href="https://ucfministries.org" target="_blank" rel="noopener" style="color:var(--fire-3)">United Christian Faith Ministries</a>.</p></div>
-    <div class="foot-col"><h5>Explore</h5><a href="about.html">About</a><a href="music.html">Music</a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener">Watch</a><a href="booking.html">Booking</a><a href="merch.html">Merch</a></div>
-    <div class="foot-col"><h5>The Movement</h5><a href="marky.html">Our Director</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsorship</a><a href="society.html">Ablaze Society</a></div>
-    <div class="foot-col"><h5>Connect</h5><a href="contact.html">Contact</a><a href="press.html">Press Kit</a><a href="https://ucfministries.org" target="_blank" rel="noopener">United Christian Faith Ministries</a></div>
+    <div class="foot-col"><h2>Explore</h2><a href="about.html">About</a><a href="music.html">Music</a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener">Watch</a><a href="booking.html">Booking</a><a href="merch.html">Merch</a></div>
+    <div class="foot-col"><h2>The Movement</h2><a href="marky.html">Our Director</a><a href="scholarship.html">Scholarship</a><a href="sponsor.html">Sponsorship</a><a href="society.html">Ablaze Society</a></div>
+    <div class="foot-col"><h2>Connect</h2><a href="contact.html">Contact</a><a href="press.html">Press Kit</a><a href="https://ucfministries.org" target="_blank" rel="noopener">United Christian Faith Ministries</a><div class="socials"><a href="https://www.tiktok.com/@ablazeyouthchoir" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a href="https://www.instagram.com/ablazeyouthchoir/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a><a href="https://open.spotify.com/artist/6zudSiQaQJQB8naH5pf65W" target="_blank" rel="noopener" aria-label="Spotify"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a><a href="https://music.apple.com/us/artist/ablaze/1717101169" target="_blank" rel="noopener" aria-label="Apple Music"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 00-1.877-.726 10.496 10.496 0 00-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026-.747.043-1.49.123-2.193.4-1.336.53-2.3 1.452-2.865 2.78-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18 0 .032-.007.062-.01.093v12.223c.01.14.017.283.027.424.05.815.154 1.624.497 2.373.65 1.42 1.738 2.353 3.234 2.801.42.127.856.187 1.293.228.555.053 1.11.06 1.667.06h11.03a12.5 12.5 0 001.57-.1c.822-.106 1.596-.35 2.295-.81a5.046 5.046 0 001.88-2.207c.186-.42.293-.87.37-1.324.113-.675.138-1.358.137-2.04-.002-3.8 0-7.595-.003-11.393zm-6.423 3.99v5.712c0 .417-.058.827-.244 1.206-.29.59-.76.962-1.388 1.14-.35.1-.706.157-1.07.173-.95.045-1.773-.6-1.943-1.536a1.88 1.88 0 011.038-2.022c.323-.16.67-.25 1.018-.324.378-.082.758-.153 1.134-.24.274-.063.457-.23.51-.516a.904.904 0 00.02-.193c0-1.815 0-3.63-.002-5.443a.725.725 0 00-.026-.185c-.04-.15-.15-.243-.304-.234-.16.01-.318.035-.475.066-.76.15-1.52.303-2.28.456l-2.325.47-1.374.278c-.016.003-.032.01-.048.013-.277.077-.377.203-.39.49-.002.042 0 .086 0 .13-.002 2.602 0 5.204-.003 7.805 0 .42-.047.836-.215 1.227-.278.64-.77 1.04-1.434 1.233-.35.1-.71.16-1.075.172-.96.036-1.755-.6-1.92-1.544-.14-.812.23-1.685 1.154-2.075.357-.15.73-.232 1.108-.31.287-.06.575-.116.86-.177.383-.083.583-.323.6-.714v-.15c0-2.96 0-5.922.002-8.882 0-.123.013-.25.042-.37.07-.285.273-.448.546-.518.255-.066.515-.112.774-.165.733-.15 1.466-.296 2.2-.444l2.27-.46c.67-.134 1.34-.27 2.01-.403.22-.043.442-.088.663-.106.31-.025.523.17.554.482.008.073.012.148.012.223.002 1.91.002 3.822 0 5.732z"/></svg></a></div></div>
   </div>
   <div class="ucfm-attribution"><div class="label">A Ministry Of</div><a href="https://ucfministries.org" target="_blank" rel="noopener"><img src="assets/logo/ucfm/ucfm-block-black.svg" alt="United Christian Faith Ministries"></a></div>
-  <div class="foot-bottom"><div>© 2026 ABLAZE YOUTH CHOIR · ALL RIGHTS RESERVED</div><div class="socials"><a href="https://www.tiktok.com/@ablazeyouthchoir" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a href="https://www.instagram.com/ablazeyouthchoir/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a><a href="https://www.youtube.com/@officialablazemusic" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a><a href="https://open.spotify.com/artist/6zudSiQaQJQB8naH5pf65W" target="_blank" rel="noopener" aria-label="Spotify"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a><a href="https://music.apple.com/us/artist/ablaze/1717101169" target="_blank" rel="noopener" aria-label="Apple Music"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 00-1.877-.726 10.496 10.496 0 00-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026-.747.043-1.49.123-2.193.4-1.336.53-2.3 1.452-2.865 2.78-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18 0 .032-.007.062-.01.093v12.223c.01.14.017.283.027.424.05.815.154 1.624.497 2.373.65 1.42 1.738 2.353 3.234 2.801.42.127.856.187 1.293.228.555.053 1.11.06 1.667.06h11.03a12.5 12.5 0 001.57-.1c.822-.106 1.596-.35 2.295-.81a5.046 5.046 0 001.88-2.207c.186-.42.293-.87.37-1.324.113-.675.138-1.358.137-2.04-.002-3.8 0-7.595-.003-11.393zm-6.423 3.99v5.712c0 .417-.058.827-.244 1.206-.29.59-.76.962-1.388 1.14-.35.1-.706.157-1.07.173-.95.045-1.773-.6-1.943-1.536a1.88 1.88 0 011.038-2.022c.323-.16.67-.25 1.018-.324.378-.082.758-.153 1.134-.24.274-.063.457-.23.51-.516a.904.904 0 00.02-.193c0-1.815 0-3.63-.002-5.443a.725.725 0 00-.026-.185c-.04-.15-.15-.243-.304-.234-.16.01-.318.035-.475.066-.76.15-1.52.303-2.28.456l-2.325.47-1.374.278c-.016.003-.032.01-.048.013-.277.077-.377.203-.39.49-.002.042 0 .086 0 .13-.002 2.602 0 5.204-.003 7.805 0 .42-.047.836-.215 1.227-.278.64-.77 1.04-1.434 1.233-.35.1-.71.16-1.075.172-.96.036-1.755-.6-1.92-1.544-.14-.812.23-1.685 1.154-2.075.357-.15.73-.232 1.108-.31.287-.06.575-.116.86-.177.383-.083.583-.323.6-.714v-.15c0-2.96 0-5.922.002-8.882 0-.123.013-.25.042-.37.07-.285.273-.448.546-.518.255-.066.515-.112.774-.165.733-.15 1.466-.296 2.2-.444l2.27-.46c.67-.134 1.34-.27 2.01-.403.22-.043.442-.088.663-.106.31-.025.523.17.554.482.008.073.012.148.012.223.002 1.91.002 3.822 0 5.732z"/></svg></a></div></div>
-</div></footer>
+  <div class="foot-bottom"><div>© 2026 ABLAZE YOUTH CHOIR · ALL RIGHTS RESERVED</div><div class="studio-credit"><asc-badge label="powered"><a href="https://avadshamarcreative.com/" target="_blank" rel="noopener">Powered by Avad Shamar</a></asc-badge><script src="https://avadshamarcreative.com/badge/badge.js?v=2" defer></script></div></div></div></footer>
 <script src="scripts.js"></script>
 </body></html>

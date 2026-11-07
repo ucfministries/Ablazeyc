@@ -1,0 +1,122 @@
+/* ============================================
+   ABLAZE DESIGN TOKENS
+   Single source of truth for colour + type.
+   Loaded by every page INCLUDING links.html, which
+   is otherwise a standalone linktree. Change a value
+   here and it reaches the whole site at once.
+   ============================================ */
+
+@font-face {
+  font-family: 'Ablaze';
+  src: url('assets/font/AblazeFont.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root{
+  /* Type families. Every font-family in this file points at one of these,
+     so swapping a typeface is a one-line change here, not a sweep. */
+  --font-display:'Anton',sans-serif;        /* h1/h2 and the big display tier */
+  --font-main:'Archivo',sans-serif;           /* body, UI, buttons, forms */
+  --font-label:'Bebas Neue',sans-serif;     /* eyebrows, kickers, micro-labels */
+  --font-accent:'Playfair Display',serif;   /* italic accents, prices, quotes */
+  --font-brand:'Ablaze','Anton',sans-serif; /* the fire word only */
+
+  /* Type scale. Replaces 46 hand-picked sizes. Every text-bearing rule maps
+     to one of these; icon glyphs and the .plw-* faux logos stay bespoke.
+     Display steps (h1-h3) are tuned to Anton's condensed metrics and will
+     need re-measuring if the display face changes. */
+  --t-micro:11px;                    /* years, roles, tags, sub-labels */
+  --t-label:13px;                    /* eyebrows, kickers, badges */
+  --t-ui:14px;                       /* buttons, fields, table cells, nav */
+  --t-body:clamp(15px,.875rem + .2vw,17px);   /* prose */
+  --t-lead:clamp(17px,1rem + .35vw,21px);     /* ledes, pull copy */
+  --t-h6:clamp(17px,.95rem + .3vw,21px);      /* smallest titles */
+  --t-h5:clamp(20px,1rem + .45vw,24px);       /* card titles */
+  --t-h4:clamp(24px,1.2rem + .6vw,32px);      /* large card + rail heads */
+  --t-h3:clamp(44px,6.5vw,104px);    /* section display */
+  --t-h2:clamp(52px,9.5vw,150px);    /* page hero */
+  --t-h1:clamp(60px,11vw,190px);     /* home hero */
+
+  /* Fluid space scale. Section rhythm breathes with the viewport instead of
+     paying desktop's fixed padding tax on a phone. Every big structural
+     padding/margin in styles.css maps to one of these four. */
+  --sp-section:clamp(72px,6vw + 40px,120px); /* section.block vertical */
+  --sp-head:clamp(38px,5vw,60px);            /* sec-head bottom margin */
+  --sp-gutter:clamp(20px,4vw,28px);          /* page + nav gutter */
+  --sp-card:clamp(24px,4.5vw,40px);          /* large card interiors */
+
+  --bg:#0a0a0a;
+  --bg-2:#121212;
+  --bg-3:#070504;
+  --ink:#f5f1ea;
+  --ink-soft:#cfc7bb;
+  --muted:#9b9389;
+  --fire-1:#ff3d00;
+  --fire-2:#ff7a18;
+  --fire-3:#ffb400;
+  /* Channel-only copies of the three fire stops, so translucent washes can be
+     written rgba(var(--fire-2-rgb),.2) and re-colour with the palette instead
+     of staying orange forever. */
+  --fire-1-rgb:255,61,0;
+  --fire-2-rgb:255,122,24;
+  --fire-3-rgb:255,180,0;
+  /* Warm tints used for sub-labels and small print on dark panels. */
+  /* Panel surfaces, darkest to most lifted. Cards, forms, tables and the
+     booking tiers all sit on these, so a campaign can repaint every panel
+     without touching a single component rule. */
+  --surf-0:#070504;
+  --surf-1:#0d0805;
+  --surf-2:#140d08;
+  --surf-3:#1f0c05;
+  --surf-3-rgb:31,12,5;
+  --surf-ember:#3a1004;
+  --fire-tint:#ffd9b3;
+  --fire-tint-2:#ffd9d2;
+  /* Brand art that bakes the fire gradient in (the hero lockup) cannot be
+     re-coloured by a variable, so the palette hands it a filter instead. */
+  --brand-img-filter:none;
+  --gold:#e8c66b;
+  --crimson:#a8160b;
+  --line:rgba(245,241,234,.12);
+  --cream:#f5f1ea;
+}
+
+/* ============================================================
+   CAMPAIGN PALETTE: "ONLY ONE" (BLUE)
+   ------------------------------------------------------------
+   Repaints the whole site in the blue of the Only One cover.
+   It only restates the fire stops above, so every page, button,
+   eyebrow, ember and glow follows automatically.
+
+   THE SWITCH is the selector on the line marked below:
+
+     :root              blue is LIVE on every page
+     :root[data-blue]   blue SLEEPS and the original fire brand
+                        above is live again. Any single page can
+                        still opt in with <html data-blue>.
+
+   Change that one selector and nothing else, in this file only.
+   ============================================================ */
+:root {                      /* <<<<<<<<<< THE SWITCH */
+  --fire-1:#1b5cff;
+  --fire-2:#4f97ff;
+  --fire-3:#7fd4ff;
+  --fire-1-rgb:27,92,255;
+  --fire-2-rgb:79,151,255;
+  --fire-3-rgb:127,212,255;
+  --fire-tint:#cfe4ff;
+  --fire-tint-2:#dbe8ff;
+  --bg-3:#05070f;
+  --crimson:#0b2f9e;
+  --brand-img-filter:hue-rotate(192deg) saturate(1.12);
+  /* Panels go dark navy into black. The tier and feature cards are already
+     gradients between two of these, so they become navy to black on their own. */
+  --surf-0:#03060f;
+  --surf-1:#0a1124;
+  --surf-2:#101a36;
+  --surf-3:#16244e;
+  --surf-3-rgb:22,36,78;
+  --surf-ember:#123a8c;
+}

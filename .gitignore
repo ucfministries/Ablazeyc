@@ -44,6 +44,11 @@ Thumbs.db
 /Map/
 /Ablaze Font/
 
+/Press/
+/Shotlist/
+# Carries its own .git, so adding it would commit a broken gitlink.
+/june web. update/
+
 # --- Stale / empty subfolder from earlier attempt ---
 /Ablaze/
 

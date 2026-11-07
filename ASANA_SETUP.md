@@ -102,6 +102,55 @@ minors' PII. To route it to Asana, add `scholarship` to `FORM_TO_TYPE` + a `REQU
 
 ---
 
+## 3b. "Wrong form" redirect + auto-reply
+
+Four of the contact form's **Inquiry Type** options name a category that has its
+own dedicated form. Those forms exist because each collects required fields the
+contact form has no equivalent for — a booking with no date, venue or audience
+size can't be answered, only chased. When someone picks one of these on the
+contact form, two things happen **in addition to** the normal Asana card:
+
+| Inquiry Type on `contact.html` | Visitor is sent to | Auto-reply links to |
+|---|---|---|
+| Booking | `next-step.html?to=booking` | `/booking#inquire` |
+| Press / Media | `next-step.html?to=press` | `/press#media` |
+| Sponsorship / Partnership | `next-step.html?to=sponsor` | `/sponsor#partner` |
+| Scholarship | `next-step.html?to=scholarship` | `/scholarship-apply` |
+
+The other five options (Merch, Testimony, Director, Fan Mail, Other) have no
+dedicated form — the contact form **is** their intake — so they go to
+`thank-you.html` exactly as before.
+
+1. **On-page, immediately.** Instead of `thank-you.html` they land on
+   `next-step.html`, which explains that their message was received and asks
+   for two minutes on the real form. Works with no email provider configured.
+2. **By email.** A templated auto-reply with the same nudge and a direct link,
+   `Reply-To: worship@ucfministries.org`. **Requires channel 3 below** — with no
+   `RESEND_API_KEY` / `SENDGRID_API_KEY` set, step 1 still works and this is
+   silently skipped.
+
+**The submission is never dropped.** The Asana card is created exactly as
+normal, flagged at the top of its description with `⚠️ WRONG FORM` and the link
+the visitor was given, so whoever works the card knows (a) a fuller submission
+may arrive through the proper form and should be merged, and (b) the visitor has
+already been asked once — a second "please use the booking form" reply is just
+nagging.
+
+**Where the config lives — two maps that must stay in sync:**
+- `netlify/functions/submit-form.js` → `REDIRECT_FORMS` (email copy + links)
+- `site/scripts.js` → `REDIRECTS` (which `next-step.html` variant to show)
+
+Keys in both must match `contact.html`'s `<option>` text **exactly**. To add a
+variant, add it to both maps *and* add a matching `<div data-variant="…">` block
+in `site/next-step.html`.
+
+The visitor auto-reply body is **fully templated — the submitter's own message is
+never echoed back**. The recipient address is unverified visitor input, so
+echoing arbitrary text to it would turn this endpoint into a way to send
+someone else mail from our domain. Only the first name is interpolated, escaped.
+
+---
+
 ## 4. Test a submission
 
 **Locally:** `npm i -g netlify-cli` → put the vars in `.env` → `netlify dev` → open the local URL,
@@ -160,22 +209,33 @@ Why all three:
 - Channel 3 is off until a provider key is set. It is the only channel that
   emails a human on the Asana-rejected path, and it names the submitter so the
   request can be answered before anyone digs the payload out of Netlify Forms.
+  It is **also** what sends the visitor-facing "wrong form" auto-reply
+  (section 3b) — that email is the one thing here that goes to the public.
 
 Check what is live without dashboard access — a GET on the endpoint reports it:
 
 ```bash
 curl -s https://ablazeyc.com/.netlify/functions/submit-form
-# {"ok":false,"error":"Method not allowed","v":6,"notify":{"followers":2,"email":false}}
+# {"ok":false,"error":"Method not allowed","v":8,
+#  "notify":{"followers":2,"email":false,
+#            "autoReply":["Booking","Press / Media","Sponsorship / Partnership","Scholarship"]}}
 ```
 
 `email:false` just means channel 3 has no provider key — channels 1 and 2 are
-still running.
+still running, and the section 3b on-page redirect still works. `autoReply`
+lists the Inquiry Types that trigger a redirect; the emails for them only send
+once `email` is `true`.
 
 ### Turning on channel 3
 
-1. Create a Resend account and verify the `ablazeyc.com` domain.
+1. Create a Resend account and verify the `ablazeyc.com` domain (DNS records in
+   your registrar). Without a verified domain, sends from
+   `noreply@ablazeyc.com` are rejected.
 2. `netlify env:set RESEND_API_KEY "re_…"` (or set it in the dashboard).
 3. Redeploy. Confirm `notify.email` is now `true`.
+4. Submit the contact form with Inquiry Type "Booking" and a real address you
+   control — you should get the auto-reply, and the Asana card should carry the
+   `⚠️ WRONG FORM` flag.
 
 ### Reconciling misses — the `ablaze-intake-sync` agent
 

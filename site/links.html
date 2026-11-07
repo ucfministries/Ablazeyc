@@ -15,23 +15,25 @@
 <meta name="twitter:image" content="https://ablazeyc.com/assets/photos/og-ablaze-square.jpg" />
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/svg+xml" href="assets/icons/fire.svg">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<!-- Shared design tokens. This page keeps its own layout CSS (it is a standalone
+     linktree and does not need the site chrome) but it now inherits every colour,
+     type family, and scale step from the same file the rest of the site uses. -->
+<link rel="stylesheet" href="tokens.css">
 <style>
-  @font-face{font-family:'Ablaze';src:url('assets/font/AblazeFont.otf') format('opentype');font-display:swap}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:#0a0a0a;color:#f5f1ea;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
-  body{background:
-    radial-gradient(80% 60% at 50% 0%, rgba(255,122,24,.22), transparent 60%),
-    radial-gradient(60% 50% at 50% 100%, rgba(168,22,11,.45), transparent 60%),
-    linear-gradient(180deg,#0a0a0a 0%,#150705 50%,#0a0a0a 100%);
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--font-main);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+  body{background:linear-gradient(180deg,var(--bg) 0%,var(--surf-2) 50%,var(--bg) 100%);
     background-attachment:fixed;
   }
   a{color:inherit;text-decoration:none}
 
   .embers{position:fixed;inset:0;pointer-events:none;z-index:0}
-  .ember{position:absolute;background:radial-gradient(circle, #ffb400 0%, transparent 70%);border-radius:50%;opacity:.5;filter:blur(2px);animation:rise linear infinite}
+  .ember{position:absolute;background:radial-gradient(circle, var(--fire-3) 0%, transparent 70%);border-radius:50%;opacity:.5;filter:blur(2px);animation:rise linear infinite}
   @keyframes rise{
     0%{transform:translateY(20vh) scale(.6);opacity:0}
     20%{opacity:.65}
@@ -43,13 +45,13 @@
   /* HEADER */
   .header{text-align:center;margin-bottom:30px}
   .logo-wrap{margin-bottom:22px}
-  .logo-wrap img{width:170px;max-width:55%;height:auto;margin:0 auto;display:block;filter:drop-shadow(0 8px 30px rgba(255,122,24,.35))}
+  .logo-wrap img{width:170px;max-width:55%;height:auto;margin:0 auto;display:block;filter:drop-shadow(0 8px 30px rgba(var(--fire-2-rgb),.35))}
 
   .group-photo{
     width:100%;aspect-ratio:5/4;border-radius:18px;
     overflow:hidden;margin:0 auto 22px;
     border:1px solid rgba(255,180,0,.3);
-    box-shadow:0 25px 60px rgba(255,90,0,.25), 0 0 0 1px rgba(255,180,0,.08);
+    box-shadow:0 20px 48px rgba(0,0,0,.55);
     position:relative;
   }
   .group-photo img{width:100%;height:100%;object-fit:cover;display:block}
@@ -64,54 +66,54 @@
     padding:6px 12px;border-radius:999px;
     background:rgba(0,0,0,.5);backdrop-filter:blur(10px);
     border:1px solid rgba(255,180,0,.35);
-    font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.22em;color:#ffb400;
+    font-family:var(--font-label);font-size:var(--t-micro);letter-spacing:.22em;color:var(--fire-3);
   }
-  .group-photo .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#ff3d00;box-shadow:0 0 8px #ff7a18;animation:pulse 1.6s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
-  .handle{font-family:'Bebas Neue',sans-serif;letter-spacing:.32em;font-size:13px;color:#ff7a18;margin-bottom:10px}
-  .name{font-family:'Anton',sans-serif;font-size:42px;line-height:1;letter-spacing:-.01em;text-transform:uppercase;color:#fff;margin-bottom:14px}
-  .name .fire{
-    background:linear-gradient(180deg,#ffb400,#ff3d00 70%,#a8160b);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    text-shadow:0 0 30px rgba(255,122,24,.4);
-  }
-  .tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:#cfc7bb;line-height:1.5;max-width:380px;margin:0 auto;padding:0 14px}
-  .location{margin-top:14px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#9b9389}
+  .handle{font-family:var(--font-label);letter-spacing:.32em;font-size:var(--t-label);color:var(--fire-2);margin-bottom:10px}
+  /* Display size is local to this page: the site's --t-h2 is tuned for a full-width
+     hero and would overflow a 540px linktree column. Tracking follows the site rule
+     of tightening as the type grows. */
+  .name{font-family:var(--font-display);font-size:clamp(38px,10.5vw,54px);line-height:.94;letter-spacing:-.025em;text-transform:uppercase;color:#fff;margin-bottom:14px;text-wrap:balance}
+  .name .fire{color:var(--fire-3)}
+  .tagline{font-family:var(--font-accent);font-style:italic;font-size:var(--t-body);color:var(--ink-soft);line-height:1.5;max-width:380px;margin:0 auto;padding:0 14px}
+  .location{margin-top:14px;font-size:var(--t-micro);letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
 
   /* FEATURED RELEASE */
   .featured{
     margin:30px 0 26px;padding:14px;border-radius:18px;
     background:linear-gradient(135deg,rgba(255,61,0,.18),rgba(255,180,0,.08));
-    border:1px solid rgba(255,122,24,.35);
+    border:1px solid rgba(var(--fire-2-rgb),.35);
     display:flex;gap:14px;align-items:center;
-    box-shadow:0 12px 40px rgba(255,90,0,.2);
+    box-shadow:0 10px 28px rgba(0,0,0,.5);
     transition:transform .25s ease;
   }
   .featured:hover{transform:translateY(-2px)}
-  .featured .cover{width:74px;height:74px;border-radius:10px;overflow:hidden;flex:none;background:#1d0c08}
+  .featured .cover{width:74px;height:74px;border-radius:10px;overflow:hidden;flex:none;background:var(--surf-3)}
   .featured .cover img{width:100%;height:100%;object-fit:cover;display:block}
   .featured .info{flex:1;min-width:0}
-  .featured .badge{display:inline-flex;align-items:center;gap:6px;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.22em;color:#ffb400;margin-bottom:4px}
-  .featured .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#ff3d00;box-shadow:0 0 8px #ff7a18;animation:pulse 1.6s ease-in-out infinite}
-  .featured .title{font-family:'Anton',sans-serif;font-size:20px;line-height:1;text-transform:uppercase;color:#fff;letter-spacing:.01em}
-  .featured .sub{margin-top:4px;font-size:12px;color:#cfc7bb}
-  .featured .arrow{font-size:22px;color:#ffb400;flex:none}
+  .featured .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-label);font-size:var(--t-micro);letter-spacing:.22em;color:var(--fire-3);margin-bottom:4px}
+  .featured .title{font-family:var(--font-display);font-size:var(--t-h6);line-height:1.1;text-transform:uppercase;color:#fff;letter-spacing:.01em}
+  .featured .sub{margin-top:4px;font-size:var(--t-label);color:var(--ink-soft)}
+  .featured .arrow{font-size:22px;color:var(--fire-3);flex:none}
 
+  /* Matches the site's .eyebrow step so section labels read the same here as there. */
   .section-label{
-    font-family:'Bebas Neue',sans-serif;letter-spacing:.32em;font-size:11px;
-    color:#ff7a18;margin:30px 0 14px;text-align:center;
+    font-family:var(--font-label);letter-spacing:.28em;font-size:var(--t-label);
+    color:var(--fire-2);margin:34px 0 14px;text-align:center;
     display:flex;align-items:center;gap:14px;
   }
   .section-label::before,.section-label::after{
     content:"";flex:1;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,122,24,.4),transparent);
+    background:linear-gradient(90deg,transparent,rgba(var(--fire-2-rgb),.4),transparent);
   }
 
   /* LINK BUTTON */
+  /* min-height keeps every row the same height whether its sub wraps to one line
+     or two. Without it the column rendered at three different row heights. */
   .link{
-    display:flex;align-items:center;gap:14px;
-    padding:16px 20px;border-radius:14px;
+    display:flex;align-items:center;gap:13px;
+    min-height:82px;
+    padding:14px 18px;border-radius:14px;
     background:rgba(20,12,8,.7);
     border:1px solid rgba(245,241,234,.1);
     backdrop-filter:blur(6px);
@@ -121,10 +123,10 @@
   }
   .link::before{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(135deg,rgba(255,122,24,.18),transparent 60%);
+    background:linear-gradient(135deg,rgba(var(--fire-2-rgb),.18),transparent 60%);
     opacity:0;transition:opacity .25s;
   }
-  .link:hover{transform:translateY(-2px) scale(1.01);border-color:rgba(255,122,24,.5);background:rgba(30,15,8,.9)}
+  .link:hover{transform:translateY(-2px) scale(1.01);border-color:rgba(var(--fire-2-rgb),.5);background:rgba(var(--surf-3-rgb),.9)}
   .link:hover::before{opacity:1}
   .link:active{transform:translateY(0) scale(.99)}
 
@@ -137,9 +139,9 @@
   .link .icon svg{width:22px;height:22px;display:block}
   .link .icon .emoji{font-size:22px;line-height:1}
   .link .text{flex:1;min-width:0;position:relative;z-index:1}
-  .link .text .lbl{font-family:'Anton',sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:.02em;color:#fff;line-height:1}
-  .link .text .sub{margin-top:4px;font-size:12px;color:#9b9389;letter-spacing:.04em}
-  .link .arr{color:#ff7a18;font-size:20px;position:relative;z-index:1;transition:transform .25s}
+  .link .text .lbl{font-family:var(--font-display);font-size:var(--t-h6);text-transform:uppercase;letter-spacing:.055em;color:#fff;line-height:1.05}
+  .link .text .sub{margin-top:4px;font-size:var(--t-label);color:var(--muted);letter-spacing:.04em}
+  .link .arr{color:var(--fire-2);font-size:20px;position:relative;z-index:1;transition:transform .25s}
   .link:hover .arr{transform:translate(3px,-3px)}
 
   /* Brand-specific icon backgrounds */
@@ -151,35 +153,35 @@
 
   /* PRIMARY CTAs */
   .link.primary{
-    background:linear-gradient(135deg,#ff3d00,#ffb400);
+    background:linear-gradient(135deg,var(--fire-1),var(--fire-3));
     border:none;
-    box-shadow:0 12px 30px rgba(255,90,0,.4);
+    box-shadow:0 8px 24px rgba(0,0,0,.55);
   }
   .link.primary::before{display:none}
   .link.primary .icon{background:rgba(0,0,0,.18)}
-  .link.primary .icon .emoji{color:#0a0a0a}
-  .link.primary .text .lbl{color:#0a0a0a}
+  .link.primary .icon .emoji{color:var(--bg)}
+  .link.primary .text .lbl{color:var(--bg)}
   .link.primary .text .sub{color:rgba(0,0,0,.7)}
-  .link.primary .arr{color:#0a0a0a}
-  .link.primary:hover{box-shadow:0 16px 40px rgba(255,90,0,.55)}
+  .link.primary .arr{color:var(--bg)}
+  .link.primary:hover{box-shadow:0 14px 34px rgba(0,0,0,.65)}
 
   /* EMAIL CAPTURE */
   .society{
     margin-top:28px;padding:24px 22px;border-radius:18px;
-    background:linear-gradient(135deg,rgba(168,22,11,.3),rgba(255,122,24,.18));
-    border:1px solid rgba(255,122,24,.3);
+    background:linear-gradient(135deg,rgba(168,22,11,.3),rgba(var(--fire-2-rgb),.18));
+    border:1px solid rgba(var(--fire-2-rgb),.3);
     text-align:center;
   }
-  .society .ttl{font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;color:#fff;line-height:1}
-  .society .desc{margin-top:6px;font-size:12px;color:#cfc7bb}
+  .society .ttl{font-family:var(--font-display);font-size:var(--t-h5);text-transform:uppercase;color:#fff;line-height:1}
+  .society .desc{margin-top:6px;font-size:var(--t-label);color:var(--ink-soft)}
   .society form{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
-  .society input{flex:1;min-width:160px;padding:12px 16px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:13px;color:#0a0a0a;outline:none}
+  .society input{flex:1;min-width:160px;padding:12px 16px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:var(--t-label);color:var(--bg);outline:none}
   .society button{
     padding:12px 22px;border-radius:999px;border:none;cursor:pointer;
-    background:#0a0a0a;color:#fff;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--bg);color:#fff;font-weight:700;font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
     transition:background .2s, color .2s;
   }
-  .society button:hover{background:#fff;color:#0a0a0a}
+  .society button:hover{background:#fff;color:var(--bg)}
 
   /* SOCIAL ROW */
   .socials-row{display:flex;justify-content:center;gap:12px;margin:28px 0 26px;flex-wrap:wrap}
@@ -187,11 +189,11 @@
     width:46px;height:46px;border-radius:50%;
     border:1px solid rgba(245,241,234,.18);
     display:flex;align-items:center;justify-content:center;
-    color:#cfc7bb;
+    color:var(--ink-soft);
     transition:all .25s;
   }
   .socials-row a svg{width:18px;height:18px;display:block;fill:currentColor}
-  .socials-row a:hover{border-color:#ff7a18;color:#ffb400;background:rgba(255,122,24,.08);transform:translateY(-2px)}
+  .socials-row a:hover{border-color:var(--fire-2);color:var(--fire-3);background:rgba(var(--fire-2-rgb),.08);transform:translateY(-2px)}
 
   /* UCFM ATTRIBUTION */
   .ucfm{
@@ -200,8 +202,8 @@
     text-align:center;
   }
   .ucfm .label{
-    font-family:'Bebas Neue',sans-serif;letter-spacing:.32em;font-size:10px;
-    color:#9b9389;margin-bottom:14px;
+    font-family:var(--font-label);letter-spacing:.32em;font-size:var(--t-micro);
+    color:var(--muted);margin-bottom:14px;
   }
   .ucfm .ucfm-logo{
     width:200px;max-width:80%;height:auto;margin:0 auto;display:block;
@@ -210,15 +212,15 @@
   }
   .ucfm a:hover .ucfm-logo{opacity:.95}
   .ucfm .ucfm-name{
-    margin-top:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9b9389;
+    margin-top:10px;font-size:var(--t-micro);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
     line-height:1.6;
   }
-  .ucfm a{color:#9b9389;transition:color .2s}
-  .ucfm a:hover{color:#ffb400}
+  .ucfm a{color:var(--muted);transition:color .2s}
+  .ucfm a:hover{color:var(--fire-3)}
 
-  .foot{margin-top:18px;text-align:center;font-size:10px;letter-spacing:.18em;color:#5a4f44;text-transform:uppercase;line-height:1.7}
-  .foot a{color:#9b9389}
-  .foot a:hover{color:#ffb400}
+  .foot{margin-top:18px;text-align:center;font-size:var(--t-micro);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;line-height:1.7}
+  .foot a{color:var(--muted)}
+  .foot a:hover{color:var(--fire-3)}
 </style>
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -247,11 +249,11 @@
   </div>
 
   <!-- FEATURED RELEASE -->
-  <a class="featured" href="https://open.spotify.com/track/1MxfZTglL4bVUKKqdRqnck" target="_blank" rel="noopener">
-    <div class="cover"><img src="assets/discography/no-weapon-cover.jpg" alt="No Weapon — latest single"></div>
+  <a class="featured" href="https://open.spotify.com/track/2BQTL5Mi2ngB590bc4BEVF" target="_blank" rel="noopener">
+    <div class="cover"><img src="assets/discography/only-one-cover.jpg" alt="Only One, latest single"></div>
     <div class="info">
       <div class="badge">Out Now</div>
-      <div class="title">No Weapon</div>
+      <div class="title">Only One</div>
       <div class="sub">New single · Stream everywhere</div>
     </div>
     <div class="arrow">↗</div>
@@ -311,7 +313,7 @@
     <div class="ttl">Join The Society</div>
     <div class="desc">Get drops + behind-the-scenes content first.</div>
     <form id="society-form">
-      <input type="email" placeholder="your@email.com" required>
+      <input type="email" name="email" placeholder="your@email.com" required aria-label="Email address">
       <button type="submit">Join The Society</button>
     </form>
   </div>
@@ -367,12 +369,49 @@
     d.style.animationDelay = (Math.random() * 8) + 's';
     e.appendChild(d);
   }
-  document.getElementById('society-form').addEventListener('submit', (ev) => {
+  // Society signup → the same Asana intake function every other form uses.
+  // This page does NOT load scripts.js (it is a standalone linktree), so it
+  // wires itself. It previously just animated the button and threw the address
+  // away — and since /l and /bio redirect here, that was every signup arriving
+  // from the social bios. Never show success unless the server confirmed it.
+  document.getElementById('society-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const btn = ev.target.querySelector('button');
-    btn.textContent = "You're in ✓";
+    const form = ev.target;
+    const btn = form.querySelector('button');
+    const input = form.querySelector('input[type=email]');
+    const email = (input.value || '').trim();
+    if (!email) return;
+
+    const label = 'Join The Society';
     btn.disabled = true;
-    setTimeout(() => { btn.textContent = 'Join The Society'; btn.disabled = false; ev.target.reset(); }, 2400);
+    btn.textContent = 'Joining…';
+
+    let ok = false;
+    try {
+      const res = await fetch('/.netlify/functions/submit-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          form_name: 'fan-signup',
+          email: email,
+          source_page: location.pathname,
+          submitted_at: new Date().toISOString()
+        })
+      });
+      ok = res.ok;
+      if (!ok) console.error('[society-signup] server returned', res.status);
+    } catch (err) {
+      console.error('[society-signup] request failed:', err);
+    }
+
+    if (ok) {
+      btn.textContent = "You're in ✓";
+      form.reset();
+    } else {
+      // Honest failure. A false "You're in" is how addresses got lost silently.
+      btn.textContent = 'Didn’t send. Try again';
+    }
+    setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 2600);
   });
 </script>
 

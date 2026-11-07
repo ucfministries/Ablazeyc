@@ -301,6 +301,61 @@ const CONTACT_INQUIRY_TO_TYPE = {
 };
 
 // -----------------------------------------------------------------------------
+//  3b) "WRONG FORM" AUTO-REPLY
+//  Four Inquiry Type values on the contact form name a category that has a
+//  dedicated form elsewhere on the site. Those forms exist because each one
+//  collects fields the contact form has no equivalent for — a booking with no
+//  date, venue or audience size can't be answered, only chased. When someone
+//  picks one of these on the contact form we still take the submission (the
+//  card below is created exactly as normal — never drop a lead over a routing
+//  mistake) and additionally email them a nudge to the real form.
+//
+//  Keys must match contact.html's <option> text EXACTLY.
+//  ⚠️ Mirrored client-side in site/scripts.js → REDIRECTS, which sends the
+//  visitor to next-step.html?to=<variant> instead of thank-you.html. The two
+//  maps must list the same options — change both together.
+const SITE_URL = 'https://ablazeyc.com';
+const REDIRECT_FORMS = {
+  'Booking': {
+    variant: 'booking',
+    label: 'booking request',
+    url: `${SITE_URL}/booking#inquire`,
+    cta: 'Open the Booking Form',
+    needs: 'your event date, venue, expected attendance, and which Ablaze format you want',
+  },
+  'Press / Media': {
+    variant: 'press',
+    label: 'press or media inquiry',
+    url: `${SITE_URL}/press#media`,
+    cta: 'Open the Media Form',
+    needs: 'your outlet, coverage type, and deadline',
+  },
+  'Sponsorship / Partnership': {
+    variant: 'sponsor',
+    label: 'sponsorship or partnership inquiry',
+    url: `${SITE_URL}/sponsor#partner`,
+    cta: 'Open the Partnership Form',
+    needs: 'your organization details and the tier you have in mind',
+  },
+  'Scholarship': {
+    variant: 'scholarship',
+    label: 'scholarship inquiry',
+    url: `${SITE_URL}/scholarship-apply`,
+    cta: 'Open the Application',
+    needs: 'the applicant details our review team works from',
+  },
+};
+
+// The redirect config for a submission, or null. Contact form only — the
+// dedicated forms are already the right form, and a booking submitted through
+// booking.html must never be told to go fill out booking.html.
+function redirectFormFor(fields) {
+  const formName = clean(fields.form_name) || clean(fields['form-name']);
+  if (formName !== 'contact') return null;
+  return REDIRECT_FORMS[clean(fields.inquiry)] || null;
+}
+
+// -----------------------------------------------------------------------------
 //  4) DESCRIPTION LAYOUT
 //     Per-type ordered list of [label, fieldName | (fields) => string].
 //     Empty values are skipped. Anything submitted but not listed is appended
@@ -532,6 +587,20 @@ function buildDescription(requestType, f, priority) {
   const lines = [];
   lines.push(`🔥 New ${requestType} from the Ablaze website`);
   lines.push('');
+
+  // Flag misrouted submissions at the TOP, not in the meta block — this is the
+  // one thing about the card that changes what a human should do with it. It
+  // warns that a near-duplicate may arrive shortly through the proper form (so
+  // the two get merged instead of worked twice), and it tells whoever replies
+  // that the visitor has already been asked to re-submit, so a second "please
+  // use the booking form" reply would just be nagging.
+  const redirect = redirectFormFor(f);
+  if (redirect) {
+    lines.push(`⚠️ WRONG FORM — they selected "${clean(f.inquiry)}" on the contact form.`);
+    lines.push(`   Auto-reply sent pointing them to: ${redirect.url}`);
+    lines.push(`   Expect a fuller submission through that form. Merge if it arrives.`);
+    lines.push('');
+  }
 
   const layout = DESCRIPTION_LAYOUT[requestType] || DESCRIPTION_LAYOUT['General Contact'];
   const usedKeys = new Set(['first_name', 'last_name']);
@@ -799,11 +868,32 @@ async function notifyByEmail(requestType, f, taskUrl, errorMessage) {
       : `<p style="background:#fff4f4;border-left:4px solid #c0392b;padding:12px">${escapeHtml(footer)}</p>`) +
     `</div>`;
 
+  return sendMail({
+    to: NOTIFY_EMAILS,
+    subject,
+    text,
+    html,
+    tag: taskUrl ? 'team notification' : 'team FAILURE alert',
+  });
+}
+
+// Low-level provider send — Resend if its key is set, else SendGrid, else a
+// no-op. Every caller is best-effort: this returns false rather than throwing,
+// because no mail problem is worth turning a good submission into an error for
+// the visitor.
+async function sendMail({ to, subject, text, html, replyTo, tag }) {
+  const resendKey = process.env.RESEND_API_KEY;
+  const sendgridKey = process.env.SENDGRID_API_KEY;
+  if (!resendKey && !sendgridKey) return false;
+
+  const recipients = Array.isArray(to) ? to : [to];
+  if (!recipients.length) return false;
+
   // Clamped to the invocation budget for the same reason every Asana call is:
   // a hanging mail provider must never be what gets the function killed.
   const mailBudget = invocationDeadline ? msLeft(300) : 5000;
   if (mailBudget < 500) {
-    console.warn(`[asana-intake] skipped notify email — only ${mailBudget}ms left in budget`);
+    console.warn(`[asana-intake] skipped ${tag} email — only ${mailBudget}ms left in budget`);
     return false;
   }
   const withTimeout = (url, options) => {
@@ -818,31 +908,97 @@ async function notifyByEmail(requestType, f, taskUrl, errorMessage) {
       res = await withTimeout('https://api.resend.com/emails', {
         method: 'POST',
         headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: NOTIFY_FROM, to: NOTIFY_EMAILS, subject, text, html }),
+        body: JSON.stringify({
+          from: NOTIFY_FROM,
+          to: recipients,
+          subject,
+          text,
+          html,
+          ...(replyTo ? { reply_to: replyTo } : {}),
+        }),
       });
     } else {
       res = await withTimeout('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: { Authorization: `Bearer ${sendgridKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          personalizations: [{ to: NOTIFY_EMAILS.map((email) => ({ email })) }],
+          personalizations: [{ to: recipients.map((email) => ({ email })) }],
           // SendGrid needs the address split out of the "Name <addr>" form.
           from: { email: (NOTIFY_FROM.match(/<(.+)>/) || [null, NOTIFY_FROM])[1], name: 'Ablaze Website' },
+          ...(replyTo ? { reply_to: { email: replyTo } } : {}),
           subject,
           content: [{ type: 'text/plain', value: text }, { type: 'text/html', value: html }],
         }),
       });
     }
     if (!res.ok) {
-      console.warn('[asana-intake] notify email rejected:', res.status, (await res.text()).slice(0, 300));
+      console.warn(`[asana-intake] ${tag} email rejected:`, res.status, (await res.text()).slice(0, 300));
       return false;
     }
-    console.log(`[asana-intake] notified ${NOTIFY_EMAILS.join(', ')} (${taskUrl ? 'task created' : 'FAILURE alert'})`);
+    console.log(`[asana-intake] sent ${tag} to ${recipients.join(', ')}`);
     return true;
   } catch (err) {
-    console.warn('[asana-intake] notify email failed:', err && err.message);
+    console.warn(`[asana-intake] ${tag} email failed:`, err && err.message);
     return false;
   }
+}
+
+// -----------------------------------------------------------------------------
+//  6c) "WRONG FORM" AUTO-REPLY TO THE VISITOR
+//      Sent when someone uses the contact form for a request that has its own
+//      form (see REDIRECT_FORMS). They ALSO see this as a page immediately on
+//      submit (next-step.html) — the email is the durable copy, since the page
+//      is gone the moment they close the tab and the link needs to survive.
+//
+//      SAFETY: the body is entirely templated. The visitor's own message is
+//      NEVER echoed back, because the recipient address is unverified user
+//      input — echoing arbitrary text to an arbitrary address would turn this
+//      endpoint into a way to send someone else mail through our domain. Only
+//      their first name is interpolated, and only as escaped text. Volume is
+//      bounded by the per-IP rate limit in section 7.
+// -----------------------------------------------------------------------------
+async function sendAutoReply(fields, redirect) {
+  const to = clean(fields.email);
+  if (!to || !EMAIL_RE.test(to)) return false;
+
+  const first = clean(fields.first_name) || clean(fields.name) || '';
+  const greeting = first ? `Hey ${first},` : 'Hey,';
+
+  const subject = `Thanks for reaching out — one quick step for your ${redirect.label}`;
+
+  const text =
+    `${greeting}\n\n` +
+    `Thank you for the contact — we got your message.\n\n` +
+    `It looks like a ${redirect.label}, though, and we have a dedicated form for those. ` +
+    `It asks for ${redirect.needs} — the details we need to actually process and answer you. ` +
+    `Please take two minutes to fill it out here:\n\n` +
+    `${redirect.url}\n\n` +
+    `Your message is already with our team, so nothing is lost. The form just gets you a real answer faster.\n\n` +
+    `Grace and peace,\n` +
+    `Ablaze Youth Choir\n` +
+    `${SITE_URL}\n`;
+
+  const html =
+    `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;color:#1a1a1a;max-width:560px">` +
+    `<p style="margin:0 0 16px">${escapeHtml(greeting)}</p>` +
+    `<p style="margin:0 0 16px">Thank you for the contact — we got your message.</p>` +
+    `<p style="margin:0 0 16px">It looks like a <strong>${escapeHtml(redirect.label)}</strong>, though, and we have a dedicated form for those. ` +
+    `It asks for ${escapeHtml(redirect.needs)} — the details we need to actually process and answer you.</p>` +
+    `<p style="margin:0 0 24px"><a href="${escapeHtml(redirect.url)}" style="background:#c0392b;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;display:inline-block;font-weight:600">${escapeHtml(redirect.cta)} &rarr;</a></p>` +
+    `<p style="margin:0 0 16px;color:#666;font-size:14px">Your message is already with our team, so nothing is lost. The form just gets you a real answer faster.</p>` +
+    `<p style="margin:24px 0 0;color:#666;font-size:14px">Grace and peace,<br><strong>Ablaze Youth Choir</strong><br>` +
+    `<a href="${SITE_URL}" style="color:#c0392b">ablazeyc.com</a></p>` +
+    `</div>`;
+
+  // Replies land with a human, not the unmonitored noreply@ envelope sender.
+  return sendMail({
+    to,
+    subject,
+    text,
+    html,
+    replyTo: 'worship@ucfministries.org',
+    tag: `auto-reply (${redirect.variant})`,
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -875,12 +1031,16 @@ exports.handler = async (event) => {
     return json(405, {
       ok: false,
       error: 'Method not allowed',
-      v: 7,
+      v: 8,
       // Surfaced so the ablaze-intake-sync agent can check notification wiring
       // without needing dashboard access. No secrets, just on/off.
       notify: {
         followers: NOTIFY_FOLLOWER_GIDS.length,
         email: Boolean(process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY),
+        // The visitor auto-reply rides the same provider as `email` above — if
+        // that is false, misrouted contact submissions still get the on-page
+        // redirect but no email. See ASANA_SETUP.md → Notifications.
+        autoReply: Object.keys(REDIRECT_FORMS),
       },
     });
   }
@@ -938,15 +1098,31 @@ exports.handler = async (event) => {
     } catch (subErr) {
       console.warn('[asana-intake] checklist creation issue:', subErr.message);
     }
-    // Channel B. Best-effort and awaited (the function is about to return, so a
-    // fire-and-forget promise would be killed with the invocation).
+    // Channel B, plus the visitor's "wrong form" auto-reply when one applies.
+    // Best-effort and awaited (the function is about to return, so a
+    // fire-and-forget promise would be killed with the invocation). Run
+    // CONCURRENTLY: two sends then cost one round trip, so they still fit inside
+    // the same NOTIFY_RESERVE_MS the single send was budgeted for.
+    const redirect = redirectFormFor(fields);
     try {
-      await notifyByEmail(requestType, fields, task.permalink_url || null, null);
+      await Promise.all([
+        notifyByEmail(requestType, fields, task.permalink_url || null, null),
+        redirect ? sendAutoReply(fields, redirect) : null,
+      ]);
     } catch (mailErr) {
       console.warn('[asana-intake] notify issue:', mailErr && mailErr.message);
     }
     console.log(`[asana-intake] created task ${task.gid} (${requestType}, ${checklistCount} checklist items)`);
-    return json(200, { ok: true, delivered: true, taskUrl: task.permalink_url || null });
+    // `redirect` tells the client which next-step variant to show. The browser
+    // computes this itself (scripts.js → REDIRECTS) and does not depend on the
+    // response, so this is advisory — it keeps the server the source of truth
+    // for anything that submits without our JS.
+    return json(200, {
+      ok: true,
+      delivered: true,
+      taskUrl: task.permalink_url || null,
+      nextStep: redirect ? redirect.variant : null,
+    });
   } catch (err) {
     // -------------------------------------------------------------------------
     //  NO-LOSS FAILURE PATH
@@ -972,8 +1148,16 @@ exports.handler = async (event) => {
     // machine: this is the ONE path where the Asana follower notification cannot
     // fire (there is no task), and the alert names the submitter so the request
     // can be answered by hand before anyone digs the payload out of Netlify Forms.
+    // The visitor's auto-reply rides along here too. Our Asana being down is not
+    // their problem, and the browser is about to land them on next-step.html
+    // regardless (the form's action was already rewritten before submit), so the
+    // email must match what the page told them.
     try {
-      await notifyByEmail(requestType, fields, null, err && err.message);
+      const redirect = redirectFormFor(fields);
+      await Promise.all([
+        notifyByEmail(requestType, fields, null, err && err.message),
+        redirect ? sendAutoReply(fields, redirect) : null,
+      ]);
     } catch (mailErr) {
       console.warn('[asana-intake] failure-alert email issue:', mailErr && mailErr.message);
     }
